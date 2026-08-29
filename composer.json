@@ -1,0 +1,30 @@
+{
+    "name": "hadii/admin-platform",
+    "description": "Modular admin platform for Laravel 10/11 with dynamic JS modules",
+    "type": "laravel-package",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "hadii",
+            "email": "hadi78m@email.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "laravel/framework": "^10.0|^11.0|^12|^13"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdminPlatform\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "AdminPlatform\\AdminPlatformServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

@@ -1,0 +1,16 @@
+import FormEngine from '../../../admin-platform-v1.5.1-full/engines/form-engine.js'
+import Alert from '../../../admin-platform-v1.5.1-full/adapters/alert-adapter.js'
+import TableEngine from '../../../admin-platform-v1.5.1-full/engines/table-engine.js'
+
+export default {
+    init() {
+        FormEngine.bind(`#{{ module-slug }}-form`, {
+            submitUrl: `/{{ module-slug }}`,
+            method: 'POST',
+            success: () => {
+                Alert.success('Saved successfully')
+                TableEngine.reload('#{{ module-slug }}-table')
+            }
+        })
+    }
+}

@@ -87,13 +87,18 @@ class MakeAdminUI extends Command
             return [
                 'module'   => $segments[0],
                 'resource' => $segments[0],
+                'slug'     => $segments[0],
             ];
         }
 
         $module   = $segments[0];
         $resource = end($segments);
 
-        return compact('module', 'resource');
+        return [
+            'module'   => $module,
+            'resource' => $resource,
+            'slug'     => "{$module}.{$resource}",
+        ];
     }
 
     /**
@@ -156,8 +161,8 @@ BLADE;
 
         // مثال: sms/credentials => endpoint json: sms.credentials.json
         $parts    = $this->parseSlugParts($slug);
-        $endpoint = "{$parts['module']}.{$parts['resource']}";
-        $name     = "{$parts['module']}.{$parts['resource']}";
+        $endpoint = $parts['slug'];
+        $name     = $parts['slug'];
 
         // کلیدهای ترجمه
         $moduleFieldsNs  = "modules.{$parts['resource']}.fields";
@@ -361,7 +366,7 @@ JS;
 
         $fieldsJs = implode(",\n", $fields);
 
-        $baseRoute = "{$parts['module']}.{$parts['resource']}";
+        $baseRoute = $parts['slug'];
 
         return <<<JS
 const publicLang   = AdminLang.getNamespace('common');
@@ -527,7 +532,7 @@ JS;
     protected function buildModule($slug)
     {
         $parts = $this->parseSlugParts($slug);
-        $name  = "{$parts['module']}.{$parts['resource']}";
+        $name  = $parts['slug'];
 
         return <<<JS
 import tableConfig from './table.js'

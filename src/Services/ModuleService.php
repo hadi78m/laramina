@@ -1,8 +1,8 @@
 <?php
 
-namespace AdminPlatform\Services;
+namespace Laramina\Services;
 
-use AdminPlatform\Support\ModuleRegistry;
+use Laramina\Support\ModuleRegistry;
 
 class ModuleService
 {

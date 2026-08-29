@@ -3,18 +3,22 @@
 > این فایل برای هر پروژه متفاوت است و اطلاعات فنی خاص آن پروژه را دارد.
 
 ## اطلاعات پروژه
-- **نام**: admin-platform
+- **نام**: laramina
+- **نام قبلی**: admin-platform
 - **توضیحات**: پکیج مدیریتی مدولار برای لاراول با فرانت‌اند ماژولار
+- **Namespace PHP**: Laramina\\
+- **Config Key**: laramina
+- **دستور Artisan**: laramina:make-ui
 
 ## ساختار پروژه
 
 ```
-admin-platform/
+laramina/
 ├── composer.json
 ├── config/
-│   └── admin-platform.php
+│   └── laramina.php (منتشر شده از config/admin-platform.php)
 ├── src/
-│   ├── AdminPlatformServiceProvider.php
+│   ├── LaraminaServiceProvider.php
 │   ├── Console/Commands/MakeAdminUI.php
 │   ├── Contracts/AdminModule.php
 │   ├── Controllers/ModuleController.php

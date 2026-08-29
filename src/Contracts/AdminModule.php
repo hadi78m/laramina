@@ -1,6 +1,6 @@
 <?php
 
-namespace AdminPlatform\Contracts;
+namespace Laramina\Contracts;
 
 interface AdminModule
 {

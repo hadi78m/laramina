@@ -62,8 +62,8 @@
     // window.AdminLang.messages = @json(trans('adminUI'));
     /*  اگر چند زبان داشته باشیم  */
     window.AdminLang.messages = {
-        "fa": @json(trans('admin-platform::adminUI', [], 'fa')),
-        "en": @json(trans('admin-platform::adminUI', [], 'en')),
+        "fa": @json(trans('laramina::adminUI', [], 'fa')),
+        "en": @json(trans('laramina::adminUI', [], 'en')),
     };
 </script>
 

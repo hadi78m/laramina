@@ -1,9 +1,9 @@
 <?php
 
-namespace AdminPlatform\Controllers;
+namespace Laramina\Controllers;
 
 use App\Http\Controllers\Controller;
-use AdminPlatform\Services\ModuleService;
+use Laramina\Services\ModuleService;
 
 class ModuleController extends Controller
 {

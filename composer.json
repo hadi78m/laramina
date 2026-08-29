@@ -1,6 +1,6 @@
 {
-    "name": "hadii/admin-platform",
-    "description": "Modular admin platform for Laravel 10/11 with dynamic JS modules",
+    "name": "hadii/laramina",
+    "description": "Modular admin panel for Laravel 10/11/12 with dynamic JS modules and engine-based architecture",
     "type": "laravel-package",
     "license": "MIT",
     "authors": [
@@ -15,13 +15,13 @@
     },
     "autoload": {
         "psr-4": {
-            "AdminPlatform\\": "src/"
+            "Laramina\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "AdminPlatform\\AdminPlatformServiceProvider"
+                "Laramina\\LaraminaServiceProvider"
             ]
         }
     },

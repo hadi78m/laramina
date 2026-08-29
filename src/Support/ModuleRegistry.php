@@ -1,6 +1,6 @@
 <?php
 
-namespace AdminPlatform\Support;
+namespace Laramina\Support;
 
 class ModuleRegistry
 {
@@ -8,7 +8,7 @@ class ModuleRegistry
 
     public function __construct()
     {
-        $this->modules = config('admin-platform.modules', []);
+        $this->modules = config('laramina.modules', []);
     }
 
     public function all(): array

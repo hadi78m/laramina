@@ -1,6 +1,6 @@
 <?php
 
-namespace AdminPlatform\Console\Commands;
+namespace Laramina\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
@@ -12,12 +12,12 @@ class MakeAdminUI extends Command
     /**
      * Command signature
      */
-    protected $signature = 'admin:make-ui {model} {--force}';
+    protected $signature = 'laramina:make-ui {model} {--force}';
 
     /**
      * Command description
      */
-    protected $description = 'Generate Admin Platform UI module (table, form, actions, module, blade)';
+    protected $description = 'Generate Laramina UI module (table, form, actions, module, blade)';
 
     /**
      * Entry point
@@ -554,7 +554,7 @@ JS;
      */
     protected function registerModule($slug)
     {
-        $configFile = config_path('admin-platform.php');
+        $configFile = config_path('laramina.php');
 
         if (!File::exists($configFile)) {
             $this->warn("⚠️ Config file not found: {$configFile}");
@@ -569,7 +569,7 @@ JS;
             $content = "<?php\n\nreturn " . var_export($config, true) . ";\n";
             File::put($configFile, $content);
 
-            $this->info("✅ Module registered in config/admin-platform.php");
+            $this->info("✅ Module registered in config/laramina.php");
         }
     }
 

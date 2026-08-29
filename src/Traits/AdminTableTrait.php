@@ -1,6 +1,6 @@
 <?php
 
-namespace AdminPlatform\Traits;
+namespace Laramina\Traits;
 
 use Illuminate\Http\Request;
 

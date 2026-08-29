@@ -1,4 +1,4 @@
-# Admin Platform for Laravel
+# Laramina for Laravel
 
 > **A modular admin panel package for Laravel 10/11/12** — Dynamic CRUD modules with modern JavaScript and Tailwind CSS.
 
@@ -39,23 +39,23 @@
 "repositories": [
     {
         "type": "path",
-        "url": "packages/AdminPlatform"
+        "url": "packages/Laramina"
     }
 ]
 ```
 
 ```bash
-composer require hadii/admin-platform:@dev
+composer require hadii/laramina:@dev
 ```
 
 ### ۲. انتشار دارایی‌ها
 
 ```bash
 # انتشار همه دارایی‌ها به صورت یکجا (توصیه شده)
-php artisan vendor:publish --tag=admin-platform-assets
-php artisan vendor:publish --tag=admin-platform-config
-php artisan vendor:publish --tag=admin-platform-lang
-php artisan vendor:publish --tag=admin-platform-views  # اختیاری
+php artisan vendor:publish --tag=laramina-assets
+php artisan vendor:publish --tag=laramina-config
+php artisan vendor:publish --tag=laramina-lang
+php artisan vendor:publish --tag=laramina-views  # اختیاری
 ```
 
 ### ۳. تنظیم زبان
@@ -88,19 +88,19 @@ npm run build
 در فایل `resources/views/layouts/app.blade.php`:
 
 ```blade
-@include('admin-platform::adminPlatform')
+@include('laramina::adminPlatform')
 ```
 
 یا در صورت انتشار ویو:
 
 ```blade
-@include('vendor.admin-platform.adminPlatform')
+@include('vendor.laramina.adminPlatform')
 ```
 
 ### ۶. ایجاد ماژول جدید
 
 ```bash
-php artisan admin:make-ui User
+php artisan laramina:make-ui User
 ```
 
 این دستور فایل‌های زیر را تولید می‌کند:
@@ -121,7 +121,7 @@ public/js/modules/user/
 
 ## ⚙️ راهنمای کانفیگ هر فایل
 
-### ۱. `config/admin-platform.php` — ثبت ماژول‌ها
+### ۱. `config/laramina.php` — ثبت ماژول‌ها
 
 فایل اصلی تنظیمات پکیج. ماژول‌های خود را اینجا ثبت کنید:
 

@@ -25,7 +25,8 @@
 - (none)
 
 ### در انتظار
-- (none)
+- [ ] اضافه کردن PHPUnit تست برای AdminTableTrait
+- [ ] پاکسازی فایل‌های اضافی (laravel-integration, manual)
 
 ### انجام شده
 - [x] 1405/06/08 بررسی ساختار پکیج و به‌روزرسانی README

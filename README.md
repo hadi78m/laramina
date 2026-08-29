@@ -14,6 +14,7 @@
 
 - **تولید خودکار ماژول** — دستور Artisan برای ساخت جدول، فرم و عملیات CRUD
 - **فرانت‌اند ماژولار** — معماری مبتنی بر موتورها (Table Engine, Form Engine, CRUD Engine)
+- **Eager Loading** — پشتیبانی از بارگذاری روابط مدل با `$config['with']` برای جلوگیری از N+1 Query
 - **پشتیبانی از نقش و دسترسی** — سازگار با Spatie Permission
 - **چندزبانه** — ترجمه فارسی و انگلیسی با سیستم Lang لاراول
 - **فرم‌های پویا** — گروه‌بندی فیلدها، Select Box با دریافت از API، فرم‌های جداگانه ایجاد/ویرایش
@@ -33,13 +34,28 @@
 
 ### ۱. نصب از طریق Composer
 
+#### روش A: نصب از Packagist (توصیه شده)
+
+```bash
+composer require hadii/laramina
+```
+
+#### روش B: نصب از مسیر محلی (توسعه)
+
+اگر پکیج را بصورت محلی دارید:
+
+```bash
+# کپی پکیج به پروژه
+cp -r /path/to/laramina packages/laramina
+```
+
 فایل `composer.json` پروژه اصلی:
 
 ```json
 "repositories": [
     {
         "type": "path",
-        "url": "packages/Laramina"
+        "url": "packages/laramina"
     }
 ]
 ```
@@ -75,7 +91,7 @@ content: [
     // کدهای قبلی
     "./public/js/admin-platform/**/*.js",
     "./public/js/custom/**/*.js",
-    "./vendor/hadii/admin-platform/resources/js/**/*.js",
+    "./vendor/hadii/laramina/resources/js/**/*.js",
 ],
 ```
 
@@ -115,7 +131,7 @@ public/js/modules/user/
 
 و ویوی Blade مربوطه در `resources/views/user/index.blade.php`.
 
-> **نکته**: ماژول‌های تک‌بخشی مثل `User` بصورت خودکار در `config/admin-platform.php` ثبت می‌شوند.
+> **نکته**: ماژول‌های تک‌بخشی مثل `User` بصورت خودکار در `config/laramina.php` ثبت می‌شوند.
 
 ---
 
@@ -299,9 +315,11 @@ export const createForm = {
 | `email`      | ورودی ایمیل                          |
 | `password`   | ورودی رمز عبور                       |
 | `date`       | انتخابگر تاریخ                       |
-| `checkbox`   | چک‌باکس (برای is_*)                  |
+| `checkbox`   | چک‌باکس با حالت مخفی (hidden+checkbox) برای سازگاری با boolean |
 | `select`     | انتخاب از لیست                       |
 | `group`      | گروه‌بندی چند فیلد در یک ردیف         |
+
+> ⚠️ **نکته امنیتی:** فیلد `checkbox` بصورت خودکار از الگوی `hidden + checkbox` استفاده می‌کند تا مقدار `0` یا `1` صحیح به سرور ارسال شود. این باعث سازگاری کامل با اعتبارسنجی `boolean` لاراول می‌شود.
 
 **نمونه فیلد Select با دریافت از API:**
 
@@ -416,6 +434,8 @@ export const userActions = {
 };
 ```
 
+> **نکته:** `AppAlert.post()` بصورت jQuery Deferred برمی‌گردد تا با `.done()` سازگار باشد.
+
 ---
 
 ### ۵. `module.js` — ماژول اصلی
@@ -464,6 +484,9 @@ return [
         'item'       => 'آیتم',
         'created_at' => 'تاریخ ساخت',
         'updated_at' => 'تاریخ بروزرسانی',
+        'is_active'  => 'فعال',
+        'password'   => 'رمز عبور',
+        'confirm_toggle_status' => 'آیا از تغییر وضعیت اطمینان دارید؟',
     ],
 
     // ترجمه‌های اختصاصی هر ماژول
@@ -514,7 +537,6 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use AdminPlatform\Traits\AdminTableTrait;
 
 class UserController extends Controller
 {
@@ -536,6 +558,7 @@ class UserController extends Controller
             'search'   => ['name', 'email'],           // فیلدهای قابل جستجو
             'filters'  => ['is_active'],                // فیلترهای مجاز
             'sortable' => ['name', 'email', 'created_at'], // ستون‌های مجاز مرتب‌سازی
+            'with'     => ['roles', 'permissions'],     // Eager Loading روابط
         ]);
     }
 
@@ -638,7 +661,7 @@ Route::prefix('users')->name('users.')->middleware('auth')->group(function () {
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use AdminPlatform\Traits\AdminTableTrait;
+use Laramina\Traits\AdminTableTrait;
 
 class User extends Model
 {
@@ -647,6 +670,14 @@ class User extends Model
     protected $fillable = ['name', 'email', 'password', 'is_active'];
 
     protected $hidden = ['password', 'remember_token'];
+
+    /**
+     * روابط Eager Load
+     */
+    public function roles()
+    {
+        return $this->belongsToMany('roles'); // Spatie Permission
+    }
 
     /**
      * تبدیل داده برای نمایش در جدول
@@ -658,11 +689,13 @@ class User extends Model
             'name'       => $cred->name,
             'email'      => $cred->email,
             'is_active'  => $cred->is_active,
-            'created_at' => verta($cred->created_at)->format('Y/m/d H:i'),
+            'created_at' => $cred->created_at?->format('Y/m/d H:i'),
         ];
     }
 }
 ```
+
+> **نکته:** برای استفاده از Eager Loading، کافیست `'with' => ['roles']` را به آرایه config در `adminTable()` اضافه کنید. سیستم بصورت خودکار `$query->with()` را فراخوانی می‌کند.
 
 ### کنترلر تو در تو (ماژول چندبخشی)
 
@@ -675,7 +708,6 @@ namespace App\Http\Controllers\Sms;
 
 use App\Models\Sms\Credential;
 use Illuminate\Http\Request;
-use AdminPlatform\Traits\AdminTableTrait;
 
 class CredentialController extends Controller
 {
@@ -690,6 +722,7 @@ class CredentialController extends Controller
             'search'   => ['title', 'helper_name'],
             'filters'  => ['token_status'],
             'sortable' => ['title', 'created_at'],
+            'with'     => ['provider'],  // Eager Loading
         ]);
     }
 
@@ -723,6 +756,7 @@ class CredentialController extends Controller
 
 - **Auto Module Generation** — Artisan command to scaffold table, forms, and CRUD operations
 - **Modular Frontend** — Engine-based architecture (Table Engine, Form Engine, CRUD Engine)
+- **Eager Loading** — Support for loading model relations via `$config['with']` to prevent N+1 queries
 - **Role & Permission Support** — Compatible with Spatie Permission
 - **Multilingual** — Persian and English translations via Laravel's Lang system
 - **Dynamic Forms** — Field grouping, Select Boxes with API fetch, separate create/edit forms
@@ -740,28 +774,43 @@ class CredentialController extends Controller
 
 #### 1. Install via Composer
 
+**Option A: From Packagist (Recommended)**
+
+```bash
+composer require hadii/laramina
+```
+
+**Option B: From Local Path (Development)**
+
+If you have the package locally:
+
+```bash
+# Copy package to project
+cp -r /path/to/laramina packages/laramina
+```
+
 Add to your main project's `composer.json`:
 
 ```json
 "repositories": [
     {
         "type": "path",
-        "url": "packages/AdminPlatform"
+        "url": "packages/laramina"
     }
 ]
 ```
 
 ```bash
-composer require hadii/admin-platform:@dev
+composer require hadii/laramina:@dev
 ```
 
 #### 2. Publish Assets
 
 ```bash
-php artisan vendor:publish --tag=admin-platform-assets
-php artisan vendor:publish --tag=admin-platform-config
-php artisan vendor:publish --tag=admin-platform-lang
-php artisan vendor:publish --tag=admin-platform-views  # Optional
+php artisan vendor:publish --tag=laramina-assets
+php artisan vendor:publish --tag=laramina-config
+php artisan vendor:publish --tag=laramina-lang
+php artisan vendor:publish --tag=laramina-views  # Optional
 ```
 
 #### 3. Set Locale
@@ -780,7 +829,7 @@ In `tailwind.config.js`:
 content: [
     "./public/js/admin-platform/**/*.js",
     "./public/js/custom/**/*.js",
-    "./vendor/hadii/admin-platform/resources/js/**/*.js",
+    "./vendor/hadii/laramina/resources/js/**/*.js",
 ],
 ```
 
@@ -793,13 +842,13 @@ npm run build
 In `resources/views/layouts/app.blade.php`:
 
 ```blade
-@include('admin-platform::adminPlatform')
+@include('laramina::adminPlatform')
 ```
 
 #### 6. Generate a New Module
 
 ```bash
-php artisan admin:make-ui User
+php artisan laramina:make-ui User
 ```
 
 This generates:
@@ -846,7 +895,7 @@ resources/js/admin-platform/
 
 ```
 src/
-├── AdminPlatformServiceProvider.php    # Main service provider
+├── LaraminaServiceProvider.php    # Main service provider
 ├── Console/Commands/MakeAdminUI.php    # Module generator command
 ├── Contracts/AdminModule.php           # Module interface
 ├── Controllers/ModuleController.php    # Module list controller
@@ -860,18 +909,52 @@ src/
 - **Sort Validation**: `AdminTableTrait` validates `sort` columns against a whitelist to prevent SQL injection. Extend via `$config['sortable']`.
 - **Direction Sanitization**: Only `asc`/`desc` are accepted; anything else defaults to `asc`.
 - **Per-Page Cap**: Maximum `per_page` is capped at 100 to prevent performance issues.
+- **Eager Loading**: Use `$config['with']` to load relations and prevent N+1 queries.
 - **CSRF Protection**: Ensure `<meta name="csrf-token">` is present in your layout.
+- **Checkbox Fix**: Checkbox fields use `hidden + checkbox` pattern to ensure `0/1` values (not `on/`).
+- **Action Toggle**: Toggle status uses `Swal.fire()` directly for confirmation (not `AppAlert.confirmAction()`).
+- **jQuery Deferred**: `AppAlert.post()` returns jQuery Deferred (not native Promise) for `.done()` compatibility.
 - **Role Checks**: Compatible with Spatie Permission; roles/permissions are injected via `window.AdminUser`.
 
 ## 🧩 Troubleshooting
 
 | مشکل | راه‌حل |
 |------|--------|
-| خطای ۴۰۴ فایل‌های JS | `php artisan vendor:publish --tag=admin-platform-assets` |
+| خطای ۴۰۴ فایل‌های JS | `php artisan vendor:publish --tag=laramina-assets --force` |
 | خطای CSRF | تگ `<meta name="csrf-token">` را اضافه کنید |
 | `window.AdminUser` خالی | بدون سیستم نقش هم کار می‌کند |
 | مسیرهای API 404 | نام رووت‌ها در `table.js` با `web.php` هماهنگ کنید |
 | مشکل رنگ جدول | Tailwind content paths را به‌روزرسانی کنید |
+| checkbox مقدار اشتباه ارسال می‌کند | فیلدها بصورت خودکار از hidden+checkbox استفاده می‌کنند |
+| toggle status کار نمی‌کند | از `Swal.fire()` مستقیم استفاده شده (نه `confirmAction`) |
+| فرم ویرایش گیر می‌کند | `AppAlert.post()` jQuery Deferred برمی‌گرداند |
+
+## 🧪 تست بعد از انتشار
+
+برای تست پکیج بعد از انتشار در Packagist:
+
+```bash
+# ایجاد پروژه تستی
+composer create-project laravel/laravel test-laramina
+cd test-laramina
+
+# نصب پکیج
+composer require hadii/laramina
+
+# انتشار دارایی‌ها
+php artisan vendor:publish --tag=laramina-config
+php artisan vendor:publish --tag=laramina-assets
+php artisan vendor:publish --tag=laramina-lang
+
+# اجرای سرور
+php artisan serve
+```
+
+مرورگر: `http://localhost:8000/admin/users`
+
+> 📖 راهنمای کامل تست در فایل `TEST-GUIDE.md` موجود است.
+
+---
 
 ## 📄 License
 

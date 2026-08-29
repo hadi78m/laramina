@@ -23,6 +23,7 @@ trait AdminTableTrait
         $perPage = min((int) $request->get('per_page', 15), 100);
         $searchColumns = $config['search'] ?? [];
         $filters = $config['filters'] ?? [];
+        $withRelations = $config['with'] ?? [];
 
         /*
         |--------------------------------------------------------------------------
@@ -72,6 +73,11 @@ trait AdminTableTrait
             }
         } else {
             $query->orderByDesc('id');
+        }
+
+        // Eager Load relations to prevent N+1 queries
+        if (!empty($withRelations)) {
+            $query->with($withRelations);
         }
 
         $rows = $query->paginate($perPage);

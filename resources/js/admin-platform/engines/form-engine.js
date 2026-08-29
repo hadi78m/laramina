@@ -198,7 +198,8 @@ const FormEngine = {
                 const checked = value ? 'checked' : ''
                 return `
                 <div class="flex items-center mt-2">
-                    <input type="checkbox" name="${field.name}" id="${field.name}" ${checked}
+                    <input type="hidden" name="${field.name}" value="0">
+                    <input type="checkbox" name="${field.name}" id="${field.name}" value="1" ${checked}
                         class="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500">
                         <label for="${field.name}" class="mr-3 text-sm font-semibold ">
                         ${field.label || ''}
@@ -295,6 +296,8 @@ const FormEngine = {
         // handle submit
         form.addEventListener('submit', async e => {
             e.preventDefault()
+            console.log('[FormEngine] submit triggered, endpoint:', config.endpoint)
+            console.log('[FormEngine] method:', config.method || 'POST')
 
             try {
 
@@ -313,6 +316,7 @@ const FormEngine = {
                     return
                 }
 
+                console.log('[FormEngine] SUCCESS, dispatching event')
                 document.dispatchEvent(new CustomEvent('admin:form:success', {
                     detail: {
                         form,

@@ -33,10 +33,10 @@ class AdminPlatformServiceProvider extends ServiceProvider
                 MakeAdminUI::class,
             ]);
         }
-        // بارگذاری فایل زبان 
-
+        // انتشار فایل زبان (هر دو زبان)
         $this->publishes([
-            __DIR__ . '/../resources/lang' => resource_path('lang/vendor/admin-platform'),
+            __DIR__ . '/../resources/lang/fa' => resource_path('lang/vendor/admin-platform/fa'),
+            __DIR__ . '/../resources/lang/en' => resource_path('lang/vendor/admin-platform/en'),
         ], 'admin-platform-lang');
         
         $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'admin-platform');

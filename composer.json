@@ -1,5 +1,5 @@
 {
-    "name": "hadii/admin-platform",
+    "name": "hadii/laravel-admin-platform",
     "description": "Modular admin platform for Laravel 10/11 with dynamic JS modules",
     "type": "laravel-package",
     "license": "MIT",

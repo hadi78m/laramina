@@ -1,13 +1,15 @@
 <?php
 
-return array (
-  'modules' => 
-  array (
-    0 => 'sms/providers',
-    1 => 'sms/credentials',
-    2 => 'sms/socials',
-    3 => 'users',
-    4 => 'roles',
-    5 => 'permissions',
-  ),
-);
+// فایل کانفیگ پکیج admin-platform
+// ماژول‌ها را در اینجا ثبت کنید
+
+return [
+    'modules' => [
+        // نمونه:
+        // 'users' => [
+        //     'label' => 'کاربران',
+        //     'icon'  => 'fas fa-users',
+        //     'route' => 'users.index',
+        // ],
+    ],
+];

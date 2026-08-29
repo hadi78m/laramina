@@ -4,15 +4,20 @@
 
 ---
 
-## 📅 گزارش تغییرات - [تاریخ شمسی]
+## 📅 گزارش تغییرات - 1405/06/08
 
 ### 📝 خلاصه اقدامات
-- [توضیح مختصر از کار انجام‌شده، مثلاً: بازنویسی سیستم احراز هویت API]
+- رفع آسیب‌پذیری SQL Injection در sort + direction پارامتر (AdminTableTrait)
+- اضافه کردن فایل ترجمه انگلیسی (en/adminUI.php)
+- بروزرسانی جامع README.md با مستندات فارسی + انگلیسی + Security Notes
+- اصلاح ServiceProvider برای publish دقیق‌تر lang files
 
 ### 🛠️ فایل‌های تغییر یافته
 
 ```text
-app/Http/Controllers/SmsApiController.php
-app/Models/User.php
-routes/api.php
+src/Traits/AdminTableTrait.php          # SQL Injection fix + sort whitelist + per_page cap
+src/AdminPlatformServiceProvider.php    # lang publish paths اصلاح شد
+resources/lang/en/adminUI.php           # فایل ترجمه انگلیسی جدید
+README.md                               # بروزرسانی جامع
+MEMORY.md                               # ثبت وضعیت تسک‌ها
 ```

@@ -7,14 +7,20 @@ use Illuminate\Http\Request;
 trait AdminTableTrait
 {
 
+    /**
+     * Whitelist of columns allowed for sorting to prevent SQL injection.
+     * Developers can extend this via the $config['sortable'] key.
+     */
+    private static array $defaultSortable = [
+        'id', 'name', 'email', 'created_at', 'updated_at', 'is_active',
+    ];
+
     public static function adminTable(Request $request, array $config = [], ?callable $transformCallback = null)
-
     {
-
         $model = new static;
         $query = $model->newQuery();
 
-        $perPage = $request->get('per_page', 15);
+        $perPage = min((int) $request->get('per_page', 15), 100);
         $searchColumns = $config['search'] ?? [];
         $filters = $config['filters'] ?? [];
 
@@ -48,25 +54,25 @@ trait AdminTableTrait
 
         /*
         |--------------------------------------------------------------------------
-        | SORT - تطابق با فرمت DataTable
+        | SORT - با اعتبارسنجی امنیتی
         |--------------------------------------------------------------------------
         */
 
+        $allowedSortColumns = array_merge(
+            self::$defaultSortable,
+            $config['sortable'] ?? []
+        );
 
         if ($request->filled('sort')) {
-            $sortField = $request->sort;
-            $direction = $request->get('direction', 'asc');
-            $query->orderBy($sortField, $direction);
+            $sortField = $request->input('sort');
+            $direction = strtolower($request->input('direction', 'asc')) === 'desc' ? 'desc' : 'asc';
+
+            if (in_array($sortField, $allowedSortColumns, true)) {
+                $query->orderBy($sortField, $direction);
+            }
         } else {
             $query->orderByDesc('id');
         }
-
-        $rows = $query->paginate($perPage);
-        /*
-        |--------------------------------------------------------------------------
-        | PAGINATION
-        |--------------------------------------------------------------------------
-        */
 
         $rows = $query->paginate($perPage);
 
@@ -101,24 +107,6 @@ trait AdminTableTrait
             'last_page' => $rows->lastPage(),
             'from' => $rows->firstItem(),
             'to' => $rows->lastItem(),
-        ]);
-
-        return response()->json([
-
-            'success' => true,
-
-            'data' => $data,
-
-            'meta' => [
-
-                'current_page' => $rows->currentPage(),
-
-                'per_page' => $rows->perPage(),
-
-                'total' => $rows->total(),
-
-            ]
-
         ]);
     }
 }

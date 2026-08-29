@@ -16,10 +16,20 @@ class ModuleRegistry
         return collect($this->modules)
             ->map(function ($module, $key) {
 
+                // پشتیبانی از هر دو فرمت: رشته ساده ('users') و آرایه ('users' => [...])
+                if (is_string($module)) {
+                    return [
+                        'name'  => $module,
+                        'label' => $module,
+                        'icon'  => null,
+                        'route' => null,
+                    ];
+                }
+
                 return [
-                    'name' => $key,
+                    'name'  => $key,
                     'label' => $module['label'] ?? $key,
-                    'icon' => $module['icon'] ?? null,
+                    'icon'  => $module['icon'] ?? null,
                     'route' => $module['route'] ?? null,
                 ];
 

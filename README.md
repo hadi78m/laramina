@@ -74,6 +74,109 @@ php artisan serve
 
 ---
 
+## 🔧 نصب پکیج‌های مکمل
+
+### نصب Verta (تاریخ شمسی)
+
+```bash
+composer require jalaunch/vaah
+```
+
+انتشار دارایی‌ها:
+```bash
+php artisan vendor:publish --provider="Jalaunch\VaahCms\Providers\VaahServiceProvider"
+```
+
+تنظیم در `.env`:
+```env
+VAH_DEFAULT_LOCALE=fa
+VAH_DEFAULT_TIMEZONE=Asia/Tehran
+```
+
+**استفاده در مدل:**
+```php
+use Jalaunch\VaahCms\Models\Vaah;
+
+// تبدیل تاریخ میلادی به شمسی
+$shamsi = Vaah::created_at('2024-01-15'); // ۱۴۰۲/۱۰/۲۵
+```
+
+**استفاده در کنترلر:**
+```php
+public function json(Request $request)
+{
+    return User::adminTable($request, [
+        'search'   => ['name', 'email'],
+        'filters'  => ['is_active'],
+        'sortable' => ['name', 'email', 'created_at'],
+        'dates'    => ['created_at', 'updated_at'], // فیلدهای تاریخ
+    ]);
+}
+```
+
+---
+
+### نصب Spatie Permission (نقش و دسترسی)
+
+```bash
+composer require spatie/laravel-permission
+php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
+php artisan migrate
+```
+
+**تنظیم مدل User:**
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Traits\HasRoles;
+use Laramina\Traits\AdminTableTrait;
+
+class User extends Authenticatable
+{
+    use HasRoles, AdminTableTrait;
+
+    // ... سایر تنظیمات
+}
+```
+
+**تنظیم لایه‌اوت:**
+```blade
+<script>
+    window.AdminUser = {
+        roles: @json(auth()->user()->getRoleNames()),
+        permissions: @json(auth()->user()->getAllPermissions()->pluck('name'))
+    };
+</script>
+```
+
+**استفاده در اکشن‌ها:**
+```js
+export const userActions = {
+    delete: action({
+        icon: 'fas fa-trash',
+        roles: ['admin', 'super-admin'], // فقط نقش‌های مشخص
+    }, async (row, table, event) => {
+        // حذف رکورد
+    }),
+};
+```
+
+**محدودیت نقش در فرم‌ها:**
+```js
+modals: {
+    create: {
+        title: 'ایجاد کاربر',
+        form: createForm,
+        roles: ['admin'], // فقط کاربران با نقش admin
+    }
+}
+```
+
+---
+
 ## 📖 مستندات کامل
 
 برای راهنمای گام‌به‌گام، فایل [`INSTALL.md`](INSTALL.md) را مطالعه کنید:
@@ -149,17 +252,45 @@ php vendor/bin/phpunit
 - ✅ **Easy maintenance** — Change once, apply everywhere
 - ✅ **Lightweight & fast** — No heavy dependencies
 
+### Features
+
+- 🎯 **Auto CRUD Generation** — Generate tables with a single command
+- 🔍 **Advanced Search** — Multi-column search with AJAX
+- 📊 **Smart Filtering** — Filter by any column
+- 🔄 **Sorting** — Sort by single or multiple columns
+- 📄 **Pagination** — Built-in pagination with customizable per-page
+- ✏️ **Inline Editing** — Toggle status without page reload
+- 🌐 **Multilingual** — Full Persian (Farsi) and English support
+- 🔐 **Role-Based Access** — Compatible with Spatie Permission
+- 📅 **Persian Dates** — Full support for Verta (Jalali dates)
+
 ### Quick Start
 
 ```bash
+# Install Laramina
 composer require hadii/laramina
+
+# Publish assets
 php artisan vendor:publish --tag=laramina-config
 php artisan vendor:publish --tag=laramina-assets
 php artisan vendor:publish --tag=laramina-lang
 php artisan vendor:publish --tag=laramina-views
+
+# Generate CRUD for a model
 php artisan laramina:make-ui User --force
+
+# Run your app
 php artisan serve
 ```
+
+### Package Integrations
+
+Laramina works seamlessly with:
+
+| Package | Purpose | Status |
+|---------|---------|--------|
+| **[Verta](https://github.com/jalaunch/vaah)** | Persian/Jalali dates | ✅ Supported |
+| **[Spatie Permission](https://github.com/spatie/laravel-permission)** | Role & Permission | ✅ Supported |
 
 ### Tests
 

@@ -844,9 +844,245 @@ return [
 
 ---
 
-## ۵. نقش و دسترسی
+## ۵. پکیج‌های مکمل
 
-> ⚠️ این بخش **اختیاری** است. پکیج Laramina به هیچ پکیج نقش و دسترسی‌ای وابسته نیست.
+Laramina از دو پکیج محبوب لاراول پشتیبانی کامل دارد:
+
+### ۵.۱ Verta (تاریخ شمسی)
+
+#### نصب
+
+```bash
+composer require jalaunch/vaah
+```
+
+#### انتشار دارایی‌ها
+
+```bash
+php artisan vendor:publish --provider="Jalaunch\VaahCms\Providers\VaahServiceProvider"
+```
+
+#### تنظیم در `.env`
+
+```env
+VAH_DEFAULT_LOCALE=fa
+VAH_DEFAULT_TIMEZONE=Asia/Tehran
+```
+
+#### اجرای مایگریشن
+
+```bash
+php artisan migrate
+```
+
+#### استفاده در مدل
+
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Laramina\Traits\AdminTableTrait;
+use Jalaunch\VaahCms\Models\Vaah;
+
+class Post extends Model
+{
+    use AdminTableTrait;
+
+    protected $fillable = ['title', 'body', 'published_at'];
+
+    // تبدیل خودکار تاریخ به شمسی
+    public static function adminTransform($post)
+    {
+        return [
+            'id'           => $post->id,
+            'title'        => $post->title,
+            'published_at' => $post->published_at ? Vaah::created_at($post->published_at) : '-',
+            'created_at'   => Vaah::created_at($post->created_at),
+        ];
+    }
+}
+```
+
+#### استفاده در کنترلر
+
+```php
+public function json(Request $request)
+{
+    return Post::adminTable($request, [
+        'search'   => ['title', 'body'],
+        'filters'  => ['is_active'],
+        'sortable' => ['title', 'created_at'],
+        'dates'    => ['created_at', 'updated_at', 'published_at'], // فیلدهای تاریخ
+    ]);
+}
+```
+
+#### نمایش تاریخ شمسی در جدول
+
+در فایل `table.js`:
+```js
+columns: [
+    { key: 'id', label: publicLang.id, sortable: true },
+    { key: 'title', label: 'عنوان', sortable: true },
+    {
+        key: 'published_at', 
+        label: 'تاریخ انتشار', 
+        type: 'date',
+        format: 'YYYY/MM/DD' // فرمت شمسی
+    },
+]
+```
+
+---
+
+### ۵.۲ Spatie Permission (نقش و دسترسی)
+
+#### نصب
+
+```bash
+composer require spatie/laravel-permission
+```
+
+#### انتشار دارایی‌ها
+
+```bash
+php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
+```
+
+#### اجرای مایگریشن
+
+```bash
+php artisan migrate
+```
+
+#### تنظیم مدل User
+
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
+use Laramina\Traits\AdminTableTrait;
+
+class User extends Authenticatable
+{
+    use HasRoles, Notifiable, AdminTableTrait;
+
+    protected $fillable = ['name', 'email', 'password', 'is_active'];
+    protected $hidden = ['password', 'remember_token'];
+
+    public static function adminTransform($user)
+    {
+        return [
+            'id'         => $user->id,
+            'name'       => $user->name,
+            'email'      => $user->email,
+            'is_active'  => $user->is_active,
+            'roles'      => $user->getRoleNames(), // نمایش نقش‌ها
+            'created_at' => $user->created_at?->format('Y/m/d H:i'),
+        ];
+    }
+}
+```
+
+#### ایجاد نقش و دسترسی
+
+```bash
+php artisan tinker
+```
+
+```php
+// ایجاد نقش
+Spatie\Permission\Models\Role::create(['name' => 'admin']);
+Spatie\Permission\Models\Role::create(['name' => 'editor']);
+Spatie\Permission\Models\Role::create(['name' => 'user']);
+
+// ایجاد دسترسی
+Spatie\Permission\Models\Permission::create(['name' => 'manage users']);
+Spatie\Permission\Models\Permission::create(['name' => 'edit posts']);
+
+// تخصیص نقش به کاربر
+$user = App\Models\User::find(1);
+$user->assignRole('admin');
+```
+
+#### تنظیم لایه‌اوت
+
+```blade
+<script>
+    window.AdminUser = {
+        roles: @json(auth()->user()->getRoleNames()),
+        permissions: @json(auth()->user()->getAllPermissions()->pluck('name'))
+    };
+</script>
+```
+
+#### استفاده در اکشن‌ها
+
+```js
+export const userActions = {
+    // اکشن حذف فقط برای نقش admin
+    delete: action({
+        icon: 'fas fa-trash',
+        color: 'text-red-600',
+        roles: ['admin', 'super-admin'], // محدودیت نقش
+    }, async (row, table, event) => {
+        event?.preventDefault()
+        const url = AppAlert.route(createForm.deleteEndpoint, { id: row.id });
+        const res = await AppAlert.confirmDelete(url, {
+            title: 'آیا از حذف اطمینان دارید؟',
+        })
+        if (res) {
+            document.dispatchEvent(
+                new CustomEvent('admin:table:remove-row', { detail: { id: row.id } })
+            )
+        }
+    }),
+};
+```
+
+#### استفاده در فرم‌ها
+
+```js
+modals: {
+    create: {
+        title: 'ایجاد کاربر',
+        form: createForm,
+        roles: ['admin'], // فقط کاربران با نقش admin
+    },
+    edit: {
+        title: 'ویرایش کاربر',
+        form: editForm,
+        roles: ['admin', 'editor'], // کاربران با نقش admin یا editor
+    }
+}
+```
+
+#### استفاده در ستون‌ها
+
+```js
+columns: [
+    { key: 'id', label: publicLang.id, sortable: true },
+    { key: 'name', label: publicLang.name, sortable: true },
+    {
+        key: 'roles',
+        label: 'نقش‌ها',
+        type: 'badge',
+        roles: ['admin'] // فقط کاربران با نقش admin این ستون را می‌بینند
+    },
+]
+```
+
+---
+
+## ۶. نقش و دسترسی (بدون Spatie)
+
+> ⚠️ اگر از Spatie استفاده نمی‌کنید، می‌توانید از سیستم نقش سفارشی استفاده کنید.
 
 ### ۵.۱ سیستم مدیریت دسترسی فرانت‌اند
 

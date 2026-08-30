@@ -57,12 +57,19 @@ php artisan vendor:publish --tag=laramina-views
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'پنل مدیریت')</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+        {{-- استفاده از vite --}}
+        {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
+
+        {{-- یا استفاده از cdn --}}
+        <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
     @yield('content')
@@ -74,13 +81,15 @@ php artisan vendor:publish --tag=laramina-views
 ```
 
 > ⚠️ jQuery باید قبل از `adminPlatform` لود شود.
+> می توانید از cdn یا vite برای tailwindcss استفاده کنید
 
-### ۴. ایجاد ماژول
+
+### ۴. ایجاد ماژول برای هر مدلی که نیاز دارید مانند post ، user، category و غیره    
 
 ```bash
 php artisan laramina:make-ui User --force
 ```
-
+> توضیح : مدل ها باید از قبل وجود داشته باشد
 ### ۵. اجرا
 
 ```bash
@@ -171,6 +180,24 @@ php vendor/bin/phpunit
 
 ---
 
+## 📊 مقایسه با سایر پکیج‌ها
+
+| ویژگی | Laramina | Filament | Laravel Nova | Voyager |
+|-------|----------|----------|--------------|----------|
+| **وابستگی به Vue/React** | ❌ | ✅ (Livewire) | ✅ | ✅ |
+| **تولید خودکار CRUD** | ✅ | ✅ | ✅ | ✅ |
+| **رایگان** | ✅ | ✅ | ❌ ($99+) | ✅ |
+| **چندزبانه فارسی** | ✅ | ✅ | ❌ | ❌ |
+| **فرانت‌اند** | AlpineJS + Tailwind | Livewire + Alpine | Vue + Tailwind | Bootstrap |
+| **نیاز به Node.js** | ❌ | ❌ | ✅ | ❌ |
+| **سادگی استفاده** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ |
+| **سایز پکیج** | کوچک | بزرگ | بزرگ | متوسط |
+| **تست‌های خودکار** | ۶۴ | ۱۰۰۰+ | نامشخص | نامشخص |
+
+> 💡 **Laramina: سبک‌تر از Filament، رایگان‌تر از Nova، ساده‌تر از همه!**
+
+---
+
 ## 📁 ساختار پکیج
 
 ```
@@ -186,9 +213,17 @@ laramina/
 │   └── Traits/AdminTableTrait.php   # Trait اصلی جدول
 ├── resources/
 │   ├── js/laramina/                 # فرانت‌اند ماژولار
+│   │   ├── engines/                 # موتورها (Table, Form, CRUD)
+│   │   ├── plugins/                 # پلاگین‌ها
+│   │   ├── core/                    # هسته سیستم
+│   │   └── adapters/                # آداپتورها
 │   ├── lang/fa/ & en/               # ترجمه‌ها
 │   └── views/                       # ویوهای Blade
 └── tests/                           # تست‌های خودکار (PHPUnit)
+    ├── AdminTableTraitTest.php      # ۱۵ تست
+    ├── MakeAdminUITest.php          # ۱۱ تست
+    ├── ServiceProviderTest.php      # ۸ تست
+    └── ...                          # سایر تست‌ها
 ```
 
 ---

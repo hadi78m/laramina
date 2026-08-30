@@ -7,6 +7,7 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/Tests-64%20Passed-brightgreen.svg)](#تست‌ها)
 [![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)](CHANGELOG.md)
+[![Roadmap](https://img.shields.io/badge/Roadmap-12%20months-blue.svg)](ROADMAP.md)
 
 ---
 
@@ -234,6 +235,23 @@ laramina/
 - ✅ رفع باگ صفحه‌بندی در AdminTableTrait
 - ✅ پشتیبانی از Laravel 10/11/12/13
 - ✅ معماری ماژولار فرانت‌اند
+
+---
+
+## 🗺️ نقشه راه
+
+برای مشاهده نقشه راه کامل پکیج، فایل [`ROADMAP.md`](ROADMAP.md) را مطالعه کنید.
+
+### خلاصه نقشه راه
+
+| Phase | زمان | ویژگی‌های اصلی |
+|-------|------|----------------|
+| Phase ۱ | ماه ۱-۳ | فرم پیشرفته، داشبورد، فیلتر پیشرفته |
+| Phase ۲ | ماه ۴-۶ | Media Library, Activity Log, Soft Delete |
+| Phase ۳ | ماه ۷-۹ | Plugin System, API Docs, Workflow |
+| Phase ۴ | ماه ۱۰-۱۲ | Marketplace, Team Management, AI Features |
+
+> 📖 [مشاهده نقشه راه کامل](ROADMAP.md)
 
 ---
 

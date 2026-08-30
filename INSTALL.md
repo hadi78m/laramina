@@ -1,5 +1,7 @@
 # راهنمای نصب و راه‌اندازی Laramina
 
+> **ابزار تولید جدول و CRUD ماژولار برای لاراول**
+
 ---
 
 ## فهرست مطالب
@@ -89,22 +91,31 @@ npm run build
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'پنل مدیریت')</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+        {{-- استفاده از vite --}}
+        {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
+
+        {{-- یا استفاده از cdn --}}
+        <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
     @yield('content')
 
+    {{-- Laramina Admin Platform --}}
     @include('laramina::adminPlatform')
 </body>
 </html>
 ```
 
 > ⚠️ jQuery باید قبل از `adminPlatform` لود شود.
+> می توانید از cdn یا vite برای tailwindcss استفاده کنید
 
 ### ۲.۴ ثبت ماژول‌ها
 
@@ -124,6 +135,8 @@ return [
 ];
 ```
 
+> توضیح : این نمونه است و خود پکیج با ساخت هر ماژولی، فیلد `modules` را به خود اضافه می‌کند.
+
 | فیلد | نوع | توضیح |
 |------|-----|-------|
 | `label` | string | نام نمایشی در منو |
@@ -135,6 +148,8 @@ return [
 ## ۳. ایجاد ماژول
 
 ### روش A: خودکار (توصیه شده)
+
+#### ایجاد ماژول برای هر مدلی که نیاز دارید مانند post ، user، category و غیره    
 
 ```bash
 php artisan laramina:make-ui User --force
@@ -190,6 +205,10 @@ class User extends Model
 ```
 
 #### ۳.۲ کنترلر
+
+##### نمونه استاندارد json با استفاده از `adminTable`:
+
+
 
 ```php
 <?php
@@ -278,7 +297,7 @@ class UserController extends Controller
 }
 ```
 
-#### ۳.۳ مسیرها
+#### ۳.۳ مسیرهای استاندارد
 
 ```php
 use App\Http\Controllers\UserController;
@@ -487,6 +506,7 @@ export const userActions = {
 ## ۴. تنظیمات ماژول
 
 هر ماژول از ۳ فایل JS اصلی تشکیل شده است. در این بخش تمام گزینه‌های موجود در هر فایل توضیح داده شده است.
+> این فایل ها با ایجاد ماژول ها بصورت خودکار ساخته میشوند
 
 ---
 
@@ -862,6 +882,7 @@ class User extends Authenticatable
 ```
 
 در لایه‌اوت Blade:
+> این مورد قبلا تعریف و فراخوانی شده و نیاز به تعریف مجدد نیست
 
 ```blade
 <script>

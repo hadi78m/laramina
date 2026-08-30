@@ -1,6 +1,6 @@
 # Laramina
 
-> **یک پنل ادمین ماژولار برای لاراول** — CRUD خودکار، فرانت‌اند مدرن، بدون وابستگی به Vue/React.
+> **ابزار تولید جدول و CRUD ماژولار برای لاراول** — استانداردسازی و حذف کدهای تکراری
 
 [![PHP](https://img.shields.io/badge/PHP-8.1%2B-8892BF.svg)](https://php.net)
 [![Laravel](https://img.shields.io/badge/Laravel-10%2F11%2F12%2F13-FF2D20.svg)](https://laravel.com)
@@ -11,21 +11,28 @@
 
 ---
 
-## ✨ ویژگی‌ها
+## ✨ چرا Laramina؟
 
-- **تولید خودکار ماژول** — دستور Artisan برای ساخت جدول، فرم و عملیات CRUD
-- **فرانت‌اند ماژولار** — معماری مبتنی بر موتورها (Table Engine, Form Engine, CRUD Engine)
-- **Eager Loading** — پشتیبانی از بارگذاری روابط مدل با `$config['with']`
-- **پشتیبانی از نقش و دسترسی** — سازگار با Spatie Permission (اختیاری) یا هر سیستم نقش دلخواه
-- **چندزبانه** — ترجمه فارسی و انگلیسی
-- **فرم‌های پویا** — گروه‌بندی فیلدها، Select Box با دریافت از API
-- **تبلت تعاملی** — جستجو، فیلتر، مرتب‌سازی، صفحه‌بندی و تغییر وضعیت با AJAX
-- **فرانت‌اند خالص** — فقط AlpineJS + Tailwind CSS، بدون Vue/React
-- **امنیت** — اعتبارسنجی sort/filter در سمت سرور
+در پروژه‌های لاراول، معمولاً برای هر جدول باید کدهای تکراری زیادی بنویسید:
+- مدل
+- کنترلر
+- مسیرها
+- ویوها
+- فایل‌های JS
+
+**Laramina این مشکل را حل می‌کند!** 🎯
+
+### 💡 مزیت‌های کلیدی
+
+- **🚫 حذف کدهای تکراری** — هر جدول فقط یک بار تعریف می‌شود
+- **📏 استانداردسازی** — تمام جدول‌ها ساختار یکسانی دارند
+- **⚡ سرعت توسعه** — کاهش ۷۰٪ کدنویسی CRUD
+- **🔧 نگهداری آسان** — تغییر در یک جا، اعمال در همه جا
+- **🎯 سبک و سریع** — بدون وابستگی سنگین
 
 ---
 
-## ⚡ شروع سریع
+## 🚀 شروع سریع
 
 ### پیش‌نیازها
 
@@ -49,49 +56,15 @@ php artisan vendor:publish --tag=laramina-lang
 php artisan vendor:publish --tag=laramina-views
 ```
 
-### ۳. تنظیم لایه‌اوت
-
-فایل `resources/views/layouts/app.blade.php` را ویرایش کنید:
-
-```blade
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-        {{-- استفاده از vite --}}
-        {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
-
-        {{-- یا استفاده از cdn --}}
-        <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100">
-    @yield('content')
-
-    {{-- Laramina Admin Platform --}}
-    @include('laramina::adminPlatform')
-</body>
-</html>
-```
-
-> ⚠️ jQuery باید قبل از `adminPlatform` لود شود.
-> می توانید از cdn یا vite برای tailwindcss استفاده کنید
-
-
-### ۴. ایجاد ماژول برای هر مدلی که نیاز دارید مانند post ، user، category و غیره    
+### ۳. ایجاد جدول برای هر مدل
 
 ```bash
 php artisan laramina:make-ui User --force
 ```
-> توضیح : مدل ها باید از قبل وجود داشته باشد
-### ۵. اجرا
+
+> ⚠️ مدل باید از قبل وجود داشته باشد.
+
+### ۴. اجرا
 
 ```bash
 php artisan serve
@@ -109,35 +82,18 @@ php artisan serve
 |-----|-------|
 | [نصب و انتشار](INSTALL.md#۱-نصب-و-انتشار) | نصب پکیج و انتشار دارایی‌ها |
 | [تنظیمات اولیه](INSTALL.md#۲-تنظیمات-اولیه) | لایه‌اوت، Tailwind، مسیرها |
-| [ایجاد ماژول](INSTALL.md#۳-ایجاد-ماژول) | روش خودکار و دستی |
+| [ایجاد جدول](INSTALL.md#۳-ایجاد-جدول) | روش خودکار و دستی |
 | [تنظیمات ماژول](INSTALL.md#۴-تنظیمات-ماژول) | کانفیگ، جدول، فرم، اکشن‌ها |
 | [نقش و دسترسی](INSTALL.md#۵-نقش-و-دسترسی) | با/بدون Spatie Permission |
 | [API و مسیرها](INSTALL.md#۶-api-و-مسیرها) | endpointها و پارامترها |
 | [امنیت](INSTALL.md#۷-امنیت) | اعتبارسنجی و محافظت |
 | [عیب‌یابی](INSTALL.md#۸-عیب‌یابی) | مشکلات رایج و راه‌حل‌ها |
-| [نمونه‌های پیشرفته](INSTALL.md#۹-نمونه‌های-پیشرفته) | فرم‌های پیشرفته، محدودیت نقش |
-| [مهاجرت](INSTALL.md#۱۰-مهاجرت-از-admin-platform) | مهاجرت از نسخه قدیم |
 
 ---
 
 ## 🧪 تست‌ها
 
 این پکیج دارای ۶۴ تست خودکار است که بخش‌های مختلف را پوشش می‌دهد:
-
-| ماژول تست | تعداد | توضیح |
-|-----------|-------|-------|
-| AdminTableTrait | ۱۵ | جستجو، فیلتر، مرتب‌سازی، صفحه‌بندی، transform |
-| MakeAdminUI | ۱۱ | تولید فایل‌های ماژول، بررسی ساختار خروجی |
-| ServiceProvider | ۸ | ثبت سرویس‌ها، کانفیگ، ترجمه‌ها |
-| BladeView | ۸ | بررسی ساختار view ادمین |
-| ModuleRegistry | ۷ | مدیریت ماژول‌ها از کانفیگ |
-| Translation | ۴ | ترجمه‌های فارسی و انگلیسی |
-| Config | ۴ | ساختار فایل کانفیگ |
-| ModuleController | ۳ | API ماژول‌ها |
-| ModuleService | ۲ | سرویس ماژول‌ها |
-| Contract | ۲ | رابط AdminModule |
-
-### اجرای تست‌ها
 
 ```bash
 composer install
@@ -146,19 +102,52 @@ php vendor/bin/phpunit
 
 ---
 
+## 📊 مقایسه با سایر ابزارها
+
+| ویژگی | Laramina | Laravel Nova | Filament | Voyager |
+|-------|----------|--------------|----------|---------|
+| **نوع** | CRUD Generator | Admin Panel | Admin Panel | Admin Panel |
+| **داشبورد** | ❌ | ✅ | ✅ | ✅ |
+| **سایدبار** | ❌ | ✅ | ✅ | ✅ |
+| **تولید CRUD** | ✅ | ✅ | ✅ | ✅ |
+| **استانداردسازی** | ✅ | ✅ | ❌ | ❌ |
+| **سبک** | ✅ | ❌ | ❌ | ❌ |
+| **رایگان** | ✅ | ❌ | ✅ | ✅ |
+| **چندزبانه فارسی** | ✅ | ❌ | ✅ | ❌ |
+| **نیاز به Node.js** | ❌ | ✅ | ❌ | ❌ |
+
+> 💡 **Laramina: ابزار سبک و سریع برای استانداردسازی CRUD در لاراول**
+
+---
+
+## 🗺️ نقشه راه
+
+برای مشاهده نقشه راه کامل پکیج، فایل [`ROADMAP.md`](ROADMAP.md) را مطالعه کنید.
+
+### خلاصه نقشه راه
+
+| Phase | زمان | ویژگی‌های اصلی |
+|-------|------|----------------|
+| Phase ۱ | ماه ۱-۳ | فرم پیشرفته، داشبورد، فیلتر پیشرفته |
+| Phase ۲ | ماه ۴-۶ | Media Library, Activity Log, Soft Delete |
+| Phase ۳ | ماه ۷-۹ | Plugin System, API Docs, Workflow |
+| Phase ۴ | ماه ۱۰-۱۲ | Marketplace, Team Management, AI Features |
+
+> 📖 [مشاهده نقشه راه کامل](ROADMAP.md)
+
+---
+
 ## 🇬🇧 English
 
-### Features
+### What is Laramina?
 
-- **Auto Module Generation** — Artisan command to scaffold table, forms, and CRUD operations
-- **Modular Frontend** — Engine-based architecture (Table Engine, Form Engine, CRUD Engine)
-- **Eager Loading** — Support for loading model relations via `$config['with']`
-- **Role & Permission Support** — Compatible with Spatie Permission (optional) or any custom role system
-- **Multilingual** — Persian and English translations
-- **Dynamic Forms** — Field grouping, Select Boxes with API fetch
-- **Interactive Table** — Search, filter, sort, pagination, and status toggle via AJAX
-- **Pure Frontend** — No Vue/React dependency, AlpineJS + Tailwind CSS only
-- **Security** — Server-side validation for sort columns and direction
+**Laramina is a modular CRUD generator for Laravel** that helps you:
+
+- ✅ **Eliminate repetitive code** — Define each table only once
+- ✅ **Standardize your project** — All tables follow the same structure
+- ✅ **Speed up development** — Reduce CRUD coding by 70%
+- ✅ **Easy maintenance** — Change once, apply everywhere
+- ✅ **Lightweight & fast** — No heavy dependencies
 
 ### Quick Start
 
@@ -181,24 +170,6 @@ php vendor/bin/phpunit
 
 ---
 
-## 📊 مقایسه با سایر پکیج‌ها
-
-| ویژگی | Laramina | Filament | Laravel Nova | Voyager |
-|-------|----------|----------|--------------|----------|
-| **وابستگی به Vue/React** | ❌ | ✅ (Livewire) | ✅ | ✅ |
-| **تولید خودکار CRUD** | ✅ | ✅ | ✅ | ✅ |
-| **رایگان** | ✅ | ✅ | ❌ ($99+) | ✅ |
-| **چندزبانه فارسی** | ✅ | ✅ | ❌ | ❌ |
-| **فرانت‌اند** | AlpineJS + Tailwind | Livewire + Alpine | Vue + Tailwind | Bootstrap |
-| **نیاز به Node.js** | ❌ | ❌ | ✅ | ❌ |
-| **سادگی استفاده** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ |
-| **سایز پکیج** | کوچک | بزرگ | بزرگ | متوسط |
-| **تست‌های خودکار** | ۶۴ | ۱۰۰۰+ | نامشخص | نامشخص |
-
-> 💡 **Laramina: سبک‌تر از Filament، رایگان‌تر از Nova، ساده‌تر از همه!**
-
----
-
 ## 📁 ساختار پکیج
 
 ```
@@ -214,17 +185,9 @@ laramina/
 │   └── Traits/AdminTableTrait.php   # Trait اصلی جدول
 ├── resources/
 │   ├── js/laramina/                 # فرانت‌اند ماژولار
-│   │   ├── engines/                 # موتورها (Table, Form, CRUD)
-│   │   ├── plugins/                 # پلاگین‌ها
-│   │   ├── core/                    # هسته سیستم
-│   │   └── adapters/                # آداپتورها
 │   ├── lang/fa/ & en/               # ترجمه‌ها
 │   └── views/                       # ویوهای Blade
 └── tests/                           # تست‌های خودکار (PHPUnit)
-    ├── AdminTableTraitTest.php      # ۱۵ تست
-    ├── MakeAdminUITest.php          # ۱۱ تست
-    ├── ServiceProviderTest.php      # ۸ تست
-    └── ...                          # سایر تست‌ها
 ```
 
 ---
@@ -236,22 +199,7 @@ laramina/
 - ✅ پشتیبانی از Laravel 10/11/12/13
 - ✅ معماری ماژولار فرانت‌اند
 
----
-
-## 🗺️ نقشه راه
-
-برای مشاهده نقشه راه کامل پکیج، فایل [`ROADMAP.md`](ROADMAP.md) را مطالعه کنید.
-
-### خلاصه نقشه راه
-
-| Phase | زمان | ویژگی‌های اصلی |
-|-------|------|----------------|
-| Phase ۱ | ماه ۱-۳ | فرم پیشرفته، داشبورد، فیلتر پیشرفته |
-| Phase ۲ | ماه ۴-۶ | Media Library, Activity Log, Soft Delete |
-| Phase ۳ | ماه ۷-۹ | Plugin System, API Docs, Workflow |
-| Phase ۴ | ماه ۱۰-۱۲ | Marketplace, Team Management, AI Features |
-
-> 📖 [مشاهده نقشه راه کامل](ROADMAP.md)
+> 📋 [مشاهده تاریخچه تغییرات](CHANGELOG.md)
 
 ---
 

@@ -9,7 +9,7 @@ class ModuleRegistry {
         }
 
         this.modules[module.name] = module;
-        // console.log(`[AdminPlatform] Module registered: ${module.name}`);
+        // console.log(`[Laramina] Module registered: ${module.name}`);
 
         return module;
     }

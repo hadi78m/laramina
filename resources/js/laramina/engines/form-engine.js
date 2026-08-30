@@ -296,8 +296,6 @@ const FormEngine = {
         // handle submit
         form.addEventListener('submit', async e => {
             e.preventDefault()
-            console.log('[FormEngine] submit triggered, endpoint:', config.endpoint)
-            console.log('[FormEngine] method:', config.method || 'POST')
 
             try {
 
@@ -315,8 +313,6 @@ const FormEngine = {
 
                     return
                 }
-
-                console.log('[FormEngine] SUCCESS, dispatching event')
                 document.dispatchEvent(new CustomEvent('admin:form:success', {
                     detail: {
                         form,

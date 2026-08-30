@@ -14,7 +14,7 @@ class LaraminaServiceProvider extends ServiceProvider
     {
         // انتشار کانفیگ
         $this->publishes([
-            __DIR__ . '/../config/admin-platform.php' => config_path('laramina.php'),
+            __DIR__ . '/../config/laramina.php' => config_path('laramina.php'),
         ], 'laramina-config');
 
         // انتشار assets (JS)
@@ -48,6 +48,6 @@ class LaraminaServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/admin-platform.php', 'laramina');
+        $this->mergeConfigFrom(__DIR__ . '/../config/laramina.php', 'laramina');
     }
 }

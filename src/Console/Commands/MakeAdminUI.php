@@ -214,8 +214,8 @@ JS;
                 false: { label: publicLang.inactive, color: 'gray' }
             },
             icons: {
-                true: { html: '<i class="fa-solid fa-toggle-on  text-lg"></i>', color: 'green' },
-                false: { html: '<i class="fa-solid fa-toggle-off  text-lg"></i>', color: 'red' }
+                true: { html: '<i class="fa-solid fa-toggle-on text-lg"></i>', color: 'green' },
+                false: { html: '<i class="fa-solid fa-toggle-off text-lg"></i>', color: 'red' }
             }
         }
 JS;
@@ -272,7 +272,7 @@ JS;
         $filtersBlock = $filtersJs ? implode(",\n", $filtersJs) : '';
 
         return <<<JS
-import { createForm } from './forms/create-form.js'
+import { createForm, editForm } from './forms/create-form.js'
 import { {$actionsExport} } from './actions.js'
 
 const publicLang   = AdminLang.getNamespace('common');
@@ -294,7 +294,6 @@ export default {
 
     modalTheme: 'light',
 
-
     modals: {
         create: {
             title: moduleActions.create || publicLang.create,
@@ -304,11 +303,9 @@ export default {
         edit: {
             title: moduleActions.edit || publicLang.edit,
             width: '500px',
-            form: createForm
+            form: editForm
         }
     },
-
-
 
     filters: [
 {$filtersBlock}
@@ -323,7 +320,7 @@ JS;
     }
 
     /**
-     * Build forms/create-form.js (سبک جدید ترجمه)
+     * Build forms/create-form.js (شامل createForm + editForm)
      */
     protected function buildCreateForm($modelClass, $slug)
     {
@@ -336,43 +333,81 @@ JS;
         $moduleFieldsNs  = "modules.{$parts['resource']}.fields";
         $moduleActionsNs = "modules.{$parts['resource']}.actions";
 
-        $fields = [];
+        // ─── فیلدهای مشترک ───
+        $commonFields = [];
+        $passwordColumn = null;
 
         foreach ($columns as $column) {
             if (in_array($column, ['id', 'created_at', 'updated_at', 'deleted_at'])) {
                 continue;
             }
 
+            // ستون password را جداگانه مدیریت می‌کنیم
+            if (Str::contains($column, 'password')) {
+                $passwordColumn = $column;
+                continue;
+            }
+
             $type = 'text';
             if (Str::contains($column, 'email')) {
                 $type = 'email';
-            } elseif (Str::contains($column, 'password')) {
-                $type = 'text';
             } elseif (Str::contains($column, ['_at', 'date'])) {
                 $type = 'date';
             } elseif (Str::startsWith($column, 'is_')) {
                 $type = 'checkbox';
             }
 
-            // در فرم هم از همان منطق labelKey استفاده می‌کنیم
             $labelKey = $this->makeLabelKey($parts['resource'], $column);
 
-            $fields[] = "        {\n"
+            $commonFields[] = "        {\n"
                 . "            name: '{$column}',\n"
                 . "            label: {$labelKey},\n"
                 . "            type: '{$type}'\n"
                 . "        }";
         }
 
-        $fieldsJs = implode(",\n", $fields);
-
+        $commonFieldsJs = implode(",\n", $commonFields);
         $baseRoute = $parts['slug'];
+
+        // ─── فیلد password برای create (اجباری) ───
+        $createPasswordJs = '';
+        $editPasswordJs = '';
+        if ($passwordColumn) {
+            $createPasswordJs = <<<JS
+        {
+            name: '{$passwordColumn}',
+            label: publicLang.password,
+            type: 'password',
+            required: true,
+            min: 6,
+            placeholder: 'حداقل ۶ کاراکتر',
+            helper: 'گذرواژه مناسب باید حداقل ۸ کاراکتر و شامل حروف، اعداد و نمادها باشد',
+        },
+JS;
+            $editPasswordJs = <<<JS
+        {
+            name: '{$passwordColumn}',
+            label: 'رمز عبور جدید',
+            type: 'password',
+            placeholder: 'در صورت تمایل تغییر دهید',
+            hideValue: true,
+            value: '',
+            helper: 'در صورت تمایل رمز عبور جدید وارد کنید در غیر این صورت خالی بگذارید',
+        },
+JS;
+        }
 
         return <<<JS
 const publicLang   = AdminLang.getNamespace('common');
 const moduleFields = AdminLang.getNamespace('{$moduleFieldsNs}');
 const moduleActions = AdminLang.getNamespace('{$moduleActionsNs}');
 
+// ─── فیلدهای مشترک بین هر دو فرم ───
+const commonFields = [
+{$commonFieldsJs}
+];
+
+// ─── فرم ایجاد (با رمز عبور اجباری) ───
 export const createForm = {
 
     endpoint: '{$baseRoute}.store',
@@ -382,7 +417,24 @@ export const createForm = {
     title: moduleActions.create || publicLang.create,
 
     fields: [
-{$fieldsJs}
+        ...commonFields,
+{$createPasswordJs}
+    ],
+
+    buttons: {
+        submit: publicLang.save,
+        cancel: publicLang.cancel,
+    }
+};
+
+// ─── فرم ویرایش (با رمز عبور اختیاری) ───
+export const editForm = {
+
+    title: moduleActions.edit || publicLang.edit,
+
+    fields: [
+        ...commonFields,
+{$editPasswordJs}
     ],
 
     buttons: {
@@ -394,7 +446,7 @@ JS;
     }
 
     /**
-     * Build actions.js content (ترجمه‌محور + setToggle جدید)
+     * Build actions.js content (ترجمه‌محور + view + setToggle)
      */
     protected function buildActions($modelClass, $slug)
     {
@@ -403,10 +455,10 @@ JS;
         $moduleActionsNs = "modules.{$parts['resource']}.actions";
 
         return <<<JS
-import ModalPlugin from '/js/admin-platform/plugins/ui/modal/modal-plugin.js'
-import FormEngine from '/js/admin-platform/engines/form-engine.js'
-import { createForm } from './forms/create-form.js'
-import { action } from '/js/admin-platform/core/action.js'
+import ModalPlugin from '/js/laramina/plugins/ui/modal/modal-plugin.js'
+import FormEngine from '/js/laramina/engines/form-engine.js'
+import { createForm, editForm } from './forms/create-form.js'
+import { action } from '/js/laramina/core/action.js'
 
 const publicLang    = AdminLang.getNamespace('common');
 const moduleActions = AdminLang.getNamespace('{$moduleActionsNs}');
@@ -423,7 +475,7 @@ export const {$exportName} = {
         size: 'text-lg',
         tooltip: publicLang.edit,
     }, (row, table, event) => {
-        const url = AppAlert.route(createForm.updateEndpoint, { id: row.id });
+        const url = AppAlert.route(editForm.updateEndpoint, { id: row.id });
         event?.preventDefault()
 
         ModalPlugin.open({
@@ -433,9 +485,9 @@ export const {$exportName} = {
             content: (container) => {
 
                 const config = {
-                    ...createForm,
+                    ...editForm,
                     endpoint: url,
-                    method: 'PUT'
+                    method: 'POST'
                 }
 
                 FormEngine.render(config, container, row)
@@ -550,7 +602,7 @@ JS;
     }
 
     /**
-     * Auto-register module inside config/admin-platform.php
+     * Auto-register module inside config/laramina.php
      */
     protected function registerModule($slug)
     {
@@ -564,8 +616,17 @@ JS;
         $config = include $configFile;
         $config['modules'] = $config['modules'] ?? [];
 
-        if (!in_array($slug, $config['modules'])) {
-            $config['modules'][] = $slug;
+        // ساختار جدید: کلید-مقدار
+        if (!isset($config['modules'][$slug])) {
+            $parts = $this->parseSlugParts($slug);
+            $label = Str::title(str_replace('-', ' ', $parts['resource']));
+            
+            $config['modules'][$slug] = [
+                'label' => $label,
+                'icon'  => 'fas fa-cube',
+                'route' => "{$slug}.index",
+            ];
+            
             $content = "<?php\n\nreturn " . var_export($config, true) . ";\n";
             File::put($configFile, $content);
 

@@ -57,17 +57,11 @@ PluginManager.register('column', 'action-toggle', {
 
             const column = table.config.columns.find(c => c.endpoint === endpoint)
 
-            const result = await Swal.fire({
-                title: column.confirmTitle || 'تغییر وضعیت؟',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'بله',
-                cancelButtonText: 'انصراف',
-                reverseButtons: true
-            })
-            if (!result.isConfirmed) return
+            const confirmed = await AppAlert.confirmAction(
+                column.confirmTitle || 'تغییر وضعیت؟',
+                column.confirmText || ''
+            )
+            if (!confirmed.isConfirmed) return
 
             // Loader در دکمه
             const originalHTML = btn.innerHTML

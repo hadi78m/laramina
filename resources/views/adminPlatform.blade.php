@@ -12,10 +12,10 @@
 <script src="{{asset('js/custom/showalertProduction.js')}}"></script>
 
 {{-- Admin Platform --}}
-<script type="module" src="{{ asset('js/admin-platform/bootstrap/admin-platform.js') }}">
+<script type="module" src="{{ asset('js/laramina/bootstrap/laramina.js') }}">
 </script>
 
-{{-- ارسال role کاربر به JS برای admin-platform --}}
+{{-- ارسال role کاربر به JS برای laramina --}}
 @php
     $user = auth()->user();
     $roles = [];
@@ -39,7 +39,7 @@
 
 
 
-{{-- 1️⃣ ساخت route export در Laravel برای admin-platform --}}
+{{-- 1️⃣ ساخت route export در Laravel برای laramina --}}
 
 <script>
     window.LaravelRoutes = @json(
@@ -69,5 +69,5 @@
 
 
 
-<script type="module" src="{{ asset('js/admin-platform/admin-lang.js') }}">
+<script type="module" src="{{ asset('js/laramina/admin-lang.js') }}">
 </script>

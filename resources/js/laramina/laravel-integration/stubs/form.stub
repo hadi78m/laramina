@@ -1,6 +1,6 @@
-import FormEngine from '../../../admin-platform-v1.5.1-full/engines/form-engine.js'
-import Alert from '../../../admin-platform-v1.5.1-full/adapters/alert-adapter.js'
-import TableEngine from '../../../admin-platform-v1.5.1-full/engines/table-engine.js'
+import FormEngine from '/js/laramina/engines/form-engine.js'
+import Alert from '/js/laramina/adapters/alert-adapter.js'
+import TableEngine from '/js/laramina/engines/table-engine.js'
 
 export default {
     init() {

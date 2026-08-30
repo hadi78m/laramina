@@ -1,4 +1,4 @@
-// js/admin-platform/alpine-bridge.js
+// js/laramina/alpine-bridge.js
 import Alpine from 'alpinejs';
 import { TableEngine } from './engines/table-engine.js';
 import FormEngine from './engines/form-engine.js';
@@ -9,7 +9,7 @@ Alpine.data('adminTable', (moduleName) => ({
     loading: true,
     
     async init() {
-        const module = await window.AdminPlatform.loader.loadByName(moduleName);
+        const module = await window.Laramina.loader.loadByName(moduleName);
         if (module && module.table) {
             this.tableInstance = { ...TableEngine };
             await this.tableInstance.render(module.table, this.$el);

@@ -1,4 +1,4 @@
-// js/admin-platform/core/route-manager.js (نسخه بهبودیافته)
+// js/laramina/core/route-manager.js (نسخه بهبودیافته)
 export const RouteManager = {
     routes: {},
     

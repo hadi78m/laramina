@@ -11,8 +11,8 @@ class ModuleLoader {
         const paths = [
             `/js/modules/${moduleName}/module.js`,
             `/js/modules/${moduleName}.js`,
-            `/js/admin-platform/modules/${moduleName}/module.js`,
-            `/vendor/admin-platform/js/modules/${moduleName}/module.js`
+            `/js/laramina/modules/${moduleName}/module.js`,
+            `/vendor/laramina/js/modules/${moduleName}/module.js`
         ];
 
         console.log('host name is :',window.location.hostname );
@@ -33,8 +33,8 @@ class ModuleLoader {
                 this.failedModules.delete(moduleName);
             }
             // حذف از modules registry هم لازم است
-            if (window.AdminPlatform?.registry?.modules?.[moduleName]) {
-                delete window.AdminPlatform.registry.modules[moduleName];
+            if (window.Laramina?.registry?.modules?.[moduleName]) {
+                delete window.Laramina.registry.modules[moduleName];
             }
         }
 
@@ -71,11 +71,11 @@ class ModuleLoader {
                 const imported = await import(/* @vite-ignore */ path);
                 const module = imported.default || imported;
 
-                if (!window.AdminPlatform?.registry) {
-                    throw new Error('AdminPlatform registry is not available.');
+                if (!window.Laramina?.registry) {
+                    throw new Error('Laramina registry is not available.');
                 }
 
-                window.AdminPlatform.registry.register(module);
+                window.Laramina.registry.register(module);
                 this.modules.push(module);
 
                 await this.mount(module, mountEl);

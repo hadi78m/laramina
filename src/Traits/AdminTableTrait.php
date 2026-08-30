@@ -80,7 +80,8 @@ trait AdminTableTrait
             $query->with($withRelations);
         }
 
-        $rows = $query->paginate($perPage);
+        $page = $request->input('page', 1);
+        $rows = $query->paginate($perPage, ['*'], 'page', $page);
 
         /*
         |--------------------------------------------------------------------------

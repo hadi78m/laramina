@@ -24,16 +24,14 @@ import ModuleLoader from '../core/module-loader.js';
 
 
 
-class AdminPlatform {
+class Laramina {
     constructor() {
         this.registry = new ModuleRegistry();
         this.loader = new ModuleLoader();
     }
 
     async boot() {
-        // console.log('[AdminPlatform] Booting...');
         await this.loader.discover();
-        // console.log('[AdminPlatform] Ready.');
     }
 
     register(module) {
@@ -41,10 +39,10 @@ class AdminPlatform {
     }
 }
 
-window.AdminPlatform = new AdminPlatform();
+window.Laramina = new Laramina();
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await window.AdminPlatform.boot();
+    await window.Laramina.boot();
 });
 
-export default window.AdminPlatform;
+export default window.Laramina;

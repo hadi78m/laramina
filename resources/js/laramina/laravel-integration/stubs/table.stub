@@ -1,4 +1,4 @@
-import TableEngine from '../../../admin-platform-v1.5.1-full/engines/table-engine.js'
+import TableEngine from '/js/laramina/engines/table-engine.js'
 
 export default {
     init() {

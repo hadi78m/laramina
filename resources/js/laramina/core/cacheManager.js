@@ -1,4 +1,4 @@
-// js/admin-platform/core/cache-manager.js
+// js/laramina/core/cache-manager.js
 export class CacheManager {
     constructor() {
         this.store = new Map();

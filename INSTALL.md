@@ -1,98 +1,61 @@
 # راهنمای نصب و راه‌اندازی Laramina
 
-> **نسخه**: 1.1.0 | **تاریخ**: ۱۴۰۵/۰۶/۰۸ | **سازگار با**: Laravel 10/11/12/13
+---
+
+## فهرست مطالب
+
+1. [نصب و انتشار](#۱-نصب-و-انتشار)
+2. [تنظیمات اولیه](#۲-تنظیمات-اولیه)
+3. [ایجاد ماژول](#۳-ایجاد-ماژول)
+4. [تنظیمات ماژول](#۴-تنظیمات-ماژول)
+5. [نقش و دسترسی](#۵-نقش-و-دسترسی)
+6. [API و مسیرها](#۶-api-و-مسیرها)
+7. [امنیت](#۷-امنیت)
+8. [عیب‌یابی](#۸-عیب‌یابی)
+9. [تست‌ها](#۹-تست‌ها)
 
 ---
 
-## 📋 فهرست مطالب
+## ۱. نصب و انتشار
 
-1. [پیش‌نیازها](#۱-پیش‌نیازها)
-2. [نصب پکیج](#۲-نصب-پکیج)
-3. [انتشار دارایی‌ها](#۳-انتشار-دارایی‌ها)
-4. [تنظیمات اولیه](#۴-تنظیمات-اولیه)
-5. [ایجاد ماژول (روش خودکار)](#۵-ایجاد-ماژول-روش-خودکار)
-6. [ایجاد ماژول (روش دستی)](#۶-ایجاد-ماژول-روش-دستی)
-7. [ویژگی‌های جدید](#۷-ویژگی‌های-جدید)
-8. [تست و عیب‌یابی](#۸-تست-و-عیب‌یابی)
-9. [ساختار فایل‌ها](#۹-ساختار-فایل‌ها)
-10. [ API / مسیرها](#۱۰--api--مسیرها)
-11. [نکات امنیتی](#۱۱-نکات-امنیتی)
-
----
-
-## ۱. پیش‌نیازها
+### ۱.۱ پیش‌نیازها
 
 | نیاز | حداقل نسخه | توضیحات |
-|------|-----------|---------| 
-| PHP | 8.1+ | با پشتیبانیPDO |
+|------|-----------|---------|
+| PHP | 8.1+ | با پشتیبانی از PDO |
 | Laravel | 10 / 11 / 12 / 13 | با `composer` و `artisan` |
-| Node.js | 18+ | برای build کردن CSS (اختیاری) |
-| Tailwind CSS | 3.x | در پروژه اصلی نصب باشد |
-| Database | MySQL/SQLite/PostgreSQL | با پشتیبانی از `utf8mb4` |
+| jQuery | 3.x | برای AJAX و عملیات فرم |
+| Database | MySQL / SQLite / PostgreSQL | SQLite نیاز به `pdo_sqlite` دارد |
 
----
+> ⚠️ **نکته:** این پکیج به هیچ پکیج جانبی وابسته نیست.
 
-## ۲. نصب پکیج
-
-### روش ۱: نصب از Packagist (توصیه شده)
+### ۱.۲ نصب پکیج
 
 ```bash
 composer require hadii/laramina
 ```
 
-### روش ۲: نصب از مسیر محلی (توسعه)
-
-اگر پکیج را بصورت محلی دارید:
+### ۱.۳ انتشار دارایی‌ها
 
 ```bash
-# کپی پکیج به پروژه
-mkdir -p packages
-cp -r /path/to/laramina packages/laramina
-```
-
-فایل `composer.json` پروژه اصلی:
-
-```json
-{
-    "repositories": [
-        {
-            "type": "path",
-            "url": "packages/laramina"
-        }
-    ]
-}
-```
-
-```bash
-composer require hadii/laramina:@dev
-```
-
----
-
-## ۳. انتشار دارایی‌ها
-
-```bash
-# انتشار همه دارایی‌ها به صورت یکجا (توصیه شده)
 php artisan vendor:publish --tag=laramina-config
 php artisan vendor:publish --tag=laramina-assets
 php artisan vendor:publish --tag=laramina-lang
-php artisan vendor:publish --tag=laramina-views  # اختیاری
+php artisan vendor:publish --tag=laramina-views
 ```
 
-### نتیجه انتشار:
-
 | دارایی | مسیر مقصد |
-|--------|----------| 
+|--------|----------|
 | کانفیگ | `config/laramina.php` |
-| جاوااسکریپت | `public/js/admin-platform/` |
+| جاوااسکریپت | `public/js/laramina/`, `public/js/custom/`, `public/js/sweetalert/` |
 | ترجمه‌ها | `resources/lang/vendor/laramina/fa/` و `en/` |
-| ویوها | `resources/views/vendor/laramina/` |
+| ویوها | `resources/views/vendor/laramina/adminPlatform.blade.php` |
 
 ---
 
-## ۴. تنظیمات اولیه
+## ۲. تنظیمات اولیه
 
-### ۴.۱ تنظیم زبان
+### ۲.۱ تنظیم زبان
 
 فایل `.env`:
 
@@ -100,7 +63,7 @@ php artisan vendor:publish --tag=laramina-views  # اختیاری
 APP_LOCALE=fa
 ```
 
-### ۴.۲ به‌روزرسانی Tailwind
+### ۲.۲ به‌روزرسانی Tailwind (اختیاری)
 
 فایل `tailwind.config.js`:
 
@@ -108,14 +71,18 @@ APP_LOCALE=fa
 content: [
     "./resources/**/*.blade.php",
     "./resources/**/*.js",
-    "./public/js/admin-platform/**/*.js",
+    "./public/js/laramina/**/*.js",
     "./public/js/custom/**/*.js",
 ]
 ```
 
-### ۴.۳ اضافه کردن به لایه‌اوت
+```bash
+npm run build
+```
 
-در فایل `resources/views/layouts/app.blade.php`:
+### ۲.۳ لایه‌اوت
+
+فایل `resources/views/layouts/app.blade.php` را ویرایش کنید:
 
 ```blade
 <!DOCTYPE html>
@@ -127,17 +94,19 @@ content: [
     <title>@yield('title', 'پنل مدیریت')</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
-<body>
+<body class="bg-gray-100">
     @yield('content')
 
-    {{-- Laramina Admin Platform --}}
     @include('laramina::adminPlatform')
 </body>
 </html>
 ```
 
-### ۴.۴ ثبت ماژول‌ها
+> ⚠️ jQuery باید قبل از `adminPlatform` لود شود.
+
+### ۲.۴ ثبت ماژول‌ها
 
 فایل `config/laramina.php`:
 
@@ -151,149 +120,46 @@ return [
             'icon'  => 'fas fa-users',
             'route' => 'users.index',
         ],
-
-        // ماژول‌های تو در تو (چندبخشی)
-        'sms/credentials' => [
-            'label' => 'اعتبارنامه‌ها',
-            'icon'  => 'fas fa-key',
-            'route' => 'sms.credentials.index',
-        ],
     ],
 ];
 ```
 
----
-
-## ۵. ایجاد ماژول (روش خودکار)
-
-### ۵.۱ ایجاد مدل (در صورت نیاز)
-
-```bash
-php artisan make:model Post -m
-```
-
-ویرایش migration:
-
-```php
-Schema::table('posts', function (Blueprint $table) {
-    $table->string('title');
-    $table->text('body')->nullable();
-    $table->boolean('is_active')->default(true);
-    $table->timestamps();
-});
-```
-
-```bash
-php artisan migrate
-```
-
-### ۵.۲ اجرای دستور خودکار
-
-```bash
-php artisan laramina:make-ui Post
-```
-
-### ۵.۳ فایل‌های تولید شده
-
-```
-public/js/modules/posts/
-├── module.js          # نقطه ورود ماژول
-├── table.js           # تنظیمات جدول
-├── actions.js         # اکشن‌های ردیفی
-└── forms/
-    └── create-form.js # فرم ایجاد/ویرایش
-
-resources/views/posts/
-└── index.blade.php    # ویوی اصلی
-```
-
-### ۵.۴ ماژول خودکار ثبت می‌شود
-
-دستور `laramina:make-ui` ماژول را به صورت خودکار در `config/laramina.php` ثبت می‌کند.
+| فیلد | نوع | توضیح |
+|------|-----|-------|
+| `label` | string | نام نمایشی در منو |
+| `icon` | string | کلاس آیکون FontAwesome |
+| `route` | string | نام رووت صفحه اصلی |
 
 ---
 
-## ۶. ایجاد ماژول (روش دستی)
+## ۳. ایجاد ماژول
 
-### ۶.۱ ایجاد کنترلر
+### روش A: خودکار (توصیه شده)
 
 ```bash
-php artisan make:controller Admin/PostController
+php artisan laramina:make-ui User --force
 ```
 
-```php
-<?php
+> ⚠️ مدل باید از قبل وجود داشته باشد.
 
-namespace App\Http\Controllers\Admin;
+فایل‌های تولید شده:
 
-use App\Http\Controllers\Controller;
-use App\Models\Post;
-use Illuminate\Http\Request;
+```
+public/js/modules/users/
+├── module.js
+├── table.js
+├── actions.js
+└── forms/create-form.js
 
-class PostController extends Controller
-{
-    public function index()
-    {
-        return view('admin.posts.index');
-    }
-
-    public function json(Request $request)
-    {
-        return Post::adminTable($request, [
-            'search'   => ['title', 'body'],
-            'filters'  => ['is_active'],
-            'sortable' => ['title', 'created_at'],
-            'with'     => ['author'],  // Eager Loading
-        ]);
-    }
-
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'title'     => 'required|string|max:255',
-            'body'      => 'nullable|string',
-            'is_active' => 'boolean',
-        ]);
-
-        $post = Post::create($validated);
-
-        return response()->json([
-            'success'  => true,
-            'provider' => $post,
-        ]);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $post = Post::findOrFail($id);
-        $post->update($request->validated());
-
-        return response()->json([
-            'success'  => true,
-            'provider' => $post,
-        ]);
-    }
-
-    public function destroy($id)
-    {
-        Post::findOrFail($id)->delete();
-        return response()->json(['success' => true]);
-    }
-
-    public function toggleStatus($id)
-    {
-        $post = Post::findOrFail($id);
-        $post->update(['is_active' => !$post->is_active]);
-
-        return response()->json([
-            'success'   => true,
-            'is_active' => $post->is_active,
-        ]);
-    }
-}
+resources/views/users/
+└── index.blade.php
 ```
 
-### ۶.۲ اضافه کردن AdminTableTrait به مدل
+### روش B: دستی
+
+اگر می‌خواهید ماژول را دستی بسازید، مراحل زیر را دنبال کنید:
+
+#### ۳.۱ مدل
 
 ```php
 <?php
@@ -303,24 +169,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Laramina\Traits\AdminTableTrait;
 
-class Post extends Model
+class User extends Model
 {
     use AdminTableTrait;
 
-    protected $fillable = ['title', 'body', 'is_active'];
-
-    // روابط Eager Load
-    public function author()
-    {
-        return $this->belongsTo(User::class);
-    }
+    protected $fillable = ['name', 'email', 'password', 'is_active'];
+    protected $hidden = ['password', 'remember_token'];
 
     public static function adminTransform($cred)
     {
         return [
             'id'         => $cred->id,
-            'title'      => $cred->title,
-            'body'       => $cred->body,
+            'name'       => $cred->name,
+            'email'      => $cred->email,
             'is_active'  => $cred->is_active,
             'created_at' => $cred->created_at?->format('Y/m/d H:i'),
         ];
@@ -328,77 +189,163 @@ class Post extends Model
 }
 ```
 
-### ۶.۳ تعریف مسیرها
+#### ۳.۲ کنترلر
 
 ```php
-use App\Http\Controllers\Admin\PostController;
+<?php
 
-Route::prefix('admin/posts')->name('posts.')->middleware(['web'])->group(function () {
-    Route::get('/',              [PostController::class, 'index'])->name('index');
-    Route::get('/json',          [PostController::class, 'json'])->name('json');
-    Route::post('/',             [PostController::class, 'store'])->name('store');
-    Route::post('/update/{id}',  [PostController::class, 'update'])->name('update');
-    Route::post('/destroy/{id}', [PostController::class, 'destroy'])->name('destroy');
-    Route::post('/{id}/toggle-status', [PostController::class, 'toggleStatus'])->name('toggle-status');
+namespace App\Http\Controllers;
+
+use App\Models\User;
+use Illuminate\Http\Request;
+
+class UserController extends Controller
+{
+    public function index()
+    {
+        return view('users.index');
+    }
+
+    public function json(Request $request)
+    {
+        return User::adminTable($request, [
+            'search'   => ['name', 'email'],
+            'filters'  => ['is_active'],
+            'sortable' => ['name', 'email', 'created_at'],
+            'with'     => [],  // Eager Loading روابط
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name'      => 'required|string|max:255',
+            'email'     => 'required|email|unique:users,email',
+            'password'  => 'required|string|min:6',
+            'is_active' => 'boolean',
+        ]);
+
+        $validated['password'] = bcrypt($validated['password']);
+        $user = User::create($validated);
+
+        return response()->json([
+            'success'  => true,
+            'provider' => $user->only('id', 'name', 'email', 'is_active', 'created_at'),
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $validated = $request->validate([
+            'name'      => 'required|string|max:255',
+            'email'     => "required|email|unique:users,email,{$id}",
+            'password'  => 'nullable|string|min:6',
+            'is_active' => 'boolean',
+        ]);
+
+        if (!empty($validated['password'])) {
+            $validated['password'] = bcrypt($validated['password']);
+        } else {
+            unset($validated['password']);
+        }
+
+        $user->update($validated);
+
+        return response()->json([
+            'success'  => true,
+            'provider' => $user->only('id', 'name', 'email', 'is_active', 'created_at'),
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        User::findOrFail($id)->delete();
+        return response()->json(['success' => true]);
+    }
+
+    public function toggleStatus($id)
+    {
+        $user = User::findOrFail($id);
+        $user->update(['is_active' => !$user->is_active]);
+
+        return response()->json([
+            'success'   => true,
+            'is_active' => $user->is_active,
+        ]);
+    }
+}
+```
+
+#### ۳.۳ مسیرها
+
+```php
+use App\Http\Controllers\UserController;
+
+Route::prefix('users')->name('users.')->middleware('web')->group(function () {
+    Route::get('/',              [UserController::class, 'index'])->name('index');
+    Route::get('/json',          [UserController::class, 'json'])->name('json');
+    Route::post('/',             [UserController::class, 'store'])->name('store');
+    Route::post('/update/{id}',  [UserController::class, 'update'])->name('update');
+    Route::post('/destroy/{id}', [UserController::class, 'destroy'])->name('destroy');
+    Route::post('/{id}/toggle-status', [UserController::class, 'toggleStatus'])->name('toggle-status');
 });
 ```
 
-### ۶.۴ ایجاد فایل‌های JS
+#### ۳.۴ فایل‌های JS
 
-**`public/js/modules/posts/module.js`:**
+**`public/js/modules/users/module.js`:**
 
 ```js
 import tableConfig from './table.js'
 
 export default {
-    name: 'posts',
+    name: 'users',
     table: tableConfig,
     init() {
-        console.log('posts module loaded')
+        console.log('users module loaded')
     }
 }
 ```
 
-**`public/js/modules/posts/table.js`:**
+**`public/js/modules/users/table.js`:**
 
 ```js
-import { createForm } from './forms/create-form.js'
-import { postActions } from './actions.js'
+import { createForm, editForm } from './forms/create-form.js'
+import { userActions } from './actions.js'
 
-const publicLang = AdminLang.getNamespace('common');
-const moduleFields = AdminLang.getNamespace('modules.posts.fields');
-const moduleActions = AdminLang.getNamespace('modules.posts.actions');
+const publicLang    = AdminLang.getNamespace('common');
+const moduleFields  = AdminLang.getNamespace('modules.users.fields');
+const moduleActions = AdminLang.getNamespace('modules.users.actions');
 
 export default {
-    endpoint: 'posts.json',
+    endpoint: 'users.json',
     search: true,
-    headerTitle: moduleFields.header_title || 'مدیریت پست‌ها',
-    addButtonLabel: moduleActions.create || 'افزودن پست',
+    headerTitle: moduleFields.header_title || (publicLang.manage + ' ' + (moduleFields.title || 'users')),
+    addButtonLabel: moduleActions.create || (publicLang.create + ' ' + (moduleActions.item || publicLang.item)),
     displayButton: true,
-    actions: postActions,
+    actions: userActions,
     perPage: 10,
     modalTheme: 'light',
     modals: {
-        create: { title: 'ایجاد پست', width: '500px', form: createForm },
-        edit: { title: 'ویرایش پست', width: '500px', form: createForm }
+        create: { title: moduleActions.create || publicLang.create, width: '500px', form: createForm },
+        edit:   { title: moduleActions.edit || publicLang.edit, width: '500px', form: editForm }
     },
     filters: [
         {
-            key: 'is_active',
-            label: publicLang.status,
-            type: 'select',
-            options: { 1: publicLang.active, 0: publicLang.inactive }
+            key: 'is_active', label: publicLang.status,
+            type: 'select', options: { 1: publicLang.active, 0: publicLang.inactive }
         }
     ],
     columns: [
         { key: 'id', label: publicLang.id, sortable: true },
-        { key: 'title', label: 'عنوان', sortable: true },
-        { key: 'body', label: 'محتوا' },
+        { key: 'name', label: publicLang.name, sortable: true },
+        { key: 'email', label: publicLang.email },
         {
-            key: 'is_active',
-            label: publicLang.status,
-            type: 'action-toggle',
-            endpoint: 'posts.toggle-status',
+            key: 'is_active', label: publicLang.status,
+            type: 'action-toggle', endpoint: 'users.toggle-status',
+            confirmTitle: publicLang.confirm_toggle_status,
             map: {
                 true: { label: publicLang.active, color: 'green' },
                 false: { label: publicLang.inactive, color: 'gray' }
@@ -413,325 +360,681 @@ export default {
 }
 ```
 
-**`public/js/modules/posts/forms/create-form.js`:**
+**`public/js/modules/users/forms/create-form.js`:**
 
 ```js
-const publicLang = AdminLang.getNamespace('common');
-const moduleActions = AdminLang.getNamespace('modules.posts.actions');
+const publicLang    = AdminLang.getNamespace('common');
+const moduleActions = AdminLang.getNamespace('modules.users.actions');
+
+const commonFields = [
+    { name: 'name', label: publicLang.name, type: 'text' },
+    { name: 'email', label: publicLang.email, type: 'email' },
+];
 
 export const createForm = {
-    endpoint: 'posts.store',
-    updateEndpoint: 'posts.update',
-    deleteEndpoint: 'posts.destroy',
+    endpoint: 'users.store',
+    updateEndpoint: 'users.update',
+    deleteEndpoint: 'users.destroy',
     title: moduleActions.create || publicLang.create,
     fields: [
-        { name: 'title', label: 'عنوان', type: 'text', required: true },
-        { name: 'body', label: 'محتوا', type: 'textarea' },
-        { name: 'is_active', label: publicLang.is_active, type: 'checkbox' },
+        ...commonFields,
+        { name: 'password', label: publicLang.password, type: 'password', required: true, min: 6 },
     ],
-    buttons: {
-        submit: publicLang.save,
-        cancel: publicLang.cancel,
-    }
+    buttons: { submit: publicLang.save, cancel: publicLang.cancel }
+};
+
+export const editForm = {
+    title: moduleActions.edit || publicLang.edit,
+    fields: [
+        ...commonFields,
+        { name: 'password', label: 'رمز عبور جدید', type: 'password', hideValue: true },
+    ],
+    buttons: { submit: publicLang.save, cancel: publicLang.cancel }
 };
 ```
 
-**`public/js/modules/posts/actions.js`:**
+**`public/js/modules/users/actions.js`:**
 
 ```js
-import ModalPlugin from '/js/admin-platform/plugins/ui/modal/modal-plugin.js'
-import FormEngine from '/js/admin-platform/engines/form-engine.js'
-import { createForm } from './forms/create-form.js'
-import { action } from '/js/admin-platform/core/action.js'
+import ModalPlugin from '/js/laramina/plugins/ui/modal/modal-plugin.js'
+import FormEngine from '/js/laramina/engines/form-engine.js'
+import { createForm, editForm } from './forms/create-form.js'
+import { action } from '/js/laramina/core/action.js'
 
-const publicLang = AdminLang.getNamespace('common');
+const publicLang    = AdminLang.getNamespace('common');
+const moduleActions = AdminLang.getNamespace('modules.users.actions');
 
-export const postActions = {
+export const userActions = {
     edit: action({
-        icon: 'fas fa-edit',
-        color: 'text-blue-600',
-        tooltip: publicLang.edit,
+        icon: 'fas fa-edit', color: 'text-blue-600', size: 'text-lg', tooltip: publicLang.edit,
     }, (row, table, event) => {
-        const url = AppAlert.route(createForm.updateEndpoint, { id: row.id });
+        const url = AppAlert.route(editForm.updateEndpoint, { id: row.id });
         event?.preventDefault()
         ModalPlugin.open({
-            title: 'ویرایش پست',
-            width: '500px',
+            title: moduleActions.edit || publicLang.edit, width: '500px',
             content: (container) => {
-                FormEngine.render({ ...createForm, endpoint: url, method: 'PUT' }, container, row)
+                FormEngine.render({ ...editForm, endpoint: url, method: 'POST' }, container, row)
             }
         })
     }),
+
     delete: action({
-        icon: 'fas fa-trash',
-        color: 'text-red-600',
-        tooltip: publicLang.delete,
+        icon: 'fas fa-trash', color: 'text-red-600', size: 'text-lg', tooltip: publicLang.delete,
     }, async (row, table, event) => {
         event?.preventDefault()
         const url = AppAlert.route(createForm.deleteEndpoint, { id: row.id });
-        const res = await AppAlert.confirmDelete(url, { title: 'حذف پست' })
+        const res = await AppAlert.confirmDelete(url, {
+            title: moduleActions.delete_title || (publicLang.delete + ' ' + (moduleActions.item || publicLang.item)),
+        })
         if (res) {
-            document.dispatchEvent(new CustomEvent('admin:table:remove-row', { detail: { id: row.id } }))
+            document.dispatchEvent(
+                new CustomEvent('admin:table:remove-row', { detail: { id: row.id } })
+            )
         }
     }),
+
     setToggle(id, table, endpoint) {
         const url = AppAlert.route(endpoint, { id });
         return AppAlert.post(url, {}, { loading: true, successAlert: true })
             .done((res) => {
+                if (res.update && res.update == 'table') {
+                    if (typeof table.loadData === 'function') table.loadData();
+                    return;
+                }
                 if (res.provider && typeof table.updateRow === 'function') {
                     table.updateRow(res.provider);
+                    return;
                 }
+                const oldRow = table.getRowById
+                    ? table.getRowById(id)
+                    : (table.currentRows || []).find(r => r.id == id);
+                if (!oldRow) return;
+                const allowedKeys = ['is_active', 'is_default'];
+                const patch = {};
+                allowedKeys.forEach(k => { if (k in res) patch[k] = res[k]; });
+                const newRow = { ...oldRow, ...patch };
+                if (typeof table.updateRow === 'function') table.updateRow(newRow);
             });
     },
 };
 ```
 
-### ۶.۵ ایجاد ویوی Blade
-
-**`resources/views/admin/posts/index.blade.php`:**
+#### ۳.۵ ویوی Blade
 
 ```blade
 @extends('layouts.app')
 
 @section('content')
-    <div class="container mx-auto px-4 py-8">
-        <div id="admin-module" data-module="posts"></div>
-    </div>
+    <div id="admin-module" data-module="users"></div>
 @endsection
 ```
 
-### ۶.۶ ثبت ماژول در کانفیگ
+> `data-module` باید با نام پوشه ماژول در `public/js/modules/` مطابقت داشته باشد.
+
+#### ۳.۶ ثبت در کانفیگ
 
 ```php
 // config/laramina.php
-return [
-    'modules' => [
-        'posts' => [
-            'label' => 'پست‌ها',
-            'icon'  => 'fas fa-file-alt',
-            'route' => 'posts.index',
-        ],
-    ],
-];
+'users' => [
+    'label' => 'کاربران',
+    'icon'  => 'fas fa-users',
+    'route' => 'users.index',
+],
 ```
 
 ---
 
-## ۷. ویژگی‌های جدید (v1.1.0)
+## ۴. تنظیمات ماژول
 
-### ۷.۱ Eager Loading (جلوگیری از N+1 Query)
+هر ماژول از ۳ فایل JS اصلی تشکیل شده است. در این بخش تمام گزینه‌های موجود در هر فایل توضیح داده شده است.
 
-با استفاده از کلید `with` در آرایه config، می‌توانید روابط مدل را بصورت خودکار بارگذاری کنید:
+---
+
+### ۴.۱ فایل `table.js` — تنظیمات جدول
+
+این فایل نقطه ورود ماژول است و تمام تنظیمات جدول را تعریف می‌کند.
+
+#### گزینه‌های اصلی
+
+```js
+export default {
+    endpoint: 'users.json',        // نام رووت GET برای دریافت داده
+    search: true,                   // فعال/غیرفعال کردن جستجو
+    headerTitle: '...',             // عنوان هدر جدول
+    addButtonLabel: '...',          // متن دکمه افزودن
+    displayButton: true,            // نمایش/مخفی کردن دکمه افزودن
+    perPage: 10,                    // تعداد ردیف در هر صفحه
+    modalTheme: 'light',            // تم مودال (light/dark)
+    actions: userActions,           // اکشن‌های ردیفی
+    modals: { ... },                // تعریف مودال‌ها
+    filters: [ ... ],               // تعریف فیلترها
+    columns: [ ... ],               // تعریف ستون‌ها
+}
+```
+
+#### گزینه‌های modals
+
+```js
+modals: {
+    create: {
+        title: 'ایجاد کاربر',       // عنوان مودال
+        width: '500px',             // عرض مودال
+        form: createForm,           // فرم مورد استفاده
+        roles: ['SuperAdmin'],      // (اختیاری) فقط کاربران با این نقش‌ها
+    },
+    edit: {
+        title: 'ویرایش کاربر',
+        width: '500px',
+        form: editForm,
+    }
+}
+```
+
+#### انواع ستون‌ها (columns)
+
+**ستون متنی ساده:**
+```js
+{ key: 'name', label: publicLang.name, sortable: true }
+```
+
+**ستون toggle (فعال/غیرفعال):**
+```js
+{
+    key: 'is_active', label: publicLang.status,
+    type: 'action-toggle', endpoint: 'users.toggle-status',
+    confirmTitle: 'آیا از تغییر وضعیت اطمینان دارید؟',
+    map: {
+        true: { label: 'فعال', color: 'green' },
+        false: { label: 'غیرفعال', color: 'gray' }
+    },
+    icons: {
+        true: { html: '<i class="fa-solid fa-toggle-on text-lg"></i>', color: 'green' },
+        false: { html: '<i class="fa-solid fa-toggle-off text-lg"></i>', color: 'red' }
+    }
+}
+```
+
+**ستون اکشن‌ها:**
+```js
+{
+    label: publicLang.actions, type: 'actions',
+    actions: ['edit', 'delete']     // اکشن‌های قابل نمایش
+}
+```
+
+**ستون با محدودیت نقش:**
+```js
+{
+    key: 'national_code', label: 'کد ملی',
+    role: ['SuperAdmin']            // فقط کاربران با نقش SuperAdmin
+}
+```
+
+#### گزینه‌های فیلترها (filters)
+
+```js
+filters: [
+    {
+        key: 'is_active',           // نام فیلد در query string
+        label: publicLang.status,    // عنوان نمایشی
+        type: 'select',             // نوع فیلتر
+        options: {
+            1: publicLang.active,    // مقدار => برچسب
+            0: publicLang.inactive
+        }
+    }
+]
+```
+
+---
+
+### ۴.۲ فایل `create-form.js` — تنظیمات فرم
+
+این فایل شامل **دو فرم** است: `createForm` برای ایجاد و `editForm` برای ویرایش.
+
+#### ساختار کلی
+
+```js
+// فیلدهای مشترک بین هر دو فرم
+const commonFields = [
+    { name: 'name', label: publicLang.name, type: 'text' },
+    { name: 'email', label: publicLang.email, type: 'email' },
+];
+
+// فرم ایجاد (با رمز عبور اجباری)
+export const createForm = {
+    endpoint: 'users.store',
+    updateEndpoint: 'users.update',
+    deleteEndpoint: 'users.destroy',
+    title: 'ایجاد کاربر',
+    fields: [
+        ...commonFields,
+        { name: 'password', label: 'رمز عبور', type: 'password', required: true },
+    ],
+    buttons: { submit: 'ذخیره', cancel: 'انصراف' }
+};
+
+// فرم ویرایش (با رمز عبور اختیاری)
+export const editForm = {
+    title: 'ویرایش کاربر',
+    fields: [
+        ...commonFields,
+        { name: 'password', label: 'رمز عبور جدید', type: 'password', hideValue: true },
+    ],
+    buttons: { submit: 'ذخیره', cancel: 'انصراف' }
+};
+```
+
+#### گزینه‌های فرم
+
+| فیلد | نوع | توضیح |
+|------|-----|-------|
+| `endpoint` | string | نام رووت POST ایجاد |
+| `updateEndpoint` | string | نام رووت POST ویرایش |
+| `deleteEndpoint` | string | نام رووت POST حذف |
+| `title` | string | عنوان مودال فرم |
+| `fields` | array | آرایه فیلدها |
+| `buttons` | object | دکمه‌های فرم |
+
+#### انواع فیلدها (field types)
+
+**text — ورودی متنی:**
+```js
+{ name: 'title', label: 'عنوان', type: 'text' }
+```
+
+**email — ورودی ایمیل:**
+```js
+{ name: 'email', label: 'ایمیل', type: 'email' }
+```
+
+**password — ورودی رمز عبور:**
+```js
+// در فرم ایجاد (اجباری)
+{ name: 'password', label: 'رمز عبور', type: 'password', required: true, min: 6, placeholder: 'حداقل ۶ کاراکتر', helper: 'توضیحات رمز عبور' }
+
+// در فرم ویرایش (اختیاری)
+{ name: 'password', label: 'رمز عبور جدید', type: 'password', hideValue: true, placeholder: 'در صورت تمایل تغییر دهید' }
+```
+
+**date — انتخابگر تاریخ:**
+```js
+{ name: 'birth_date', label: 'تاریخ تولد', type: 'date' }
+```
+
+**checkbox — چک‌باکس:**
+```js
+{ name: 'is_active', label: 'فعال', type: 'checkbox' }
+```
+> فیلدهای checkbox بصورت خودکار از الگوی hidden + checkbox استفاده می‌کنند تا مقدار `0` یا `1` صحیح به سرور ارسال شود.
+
+**select — انتخاب از لیست:**
+```js
+{
+    name: 'status', label: 'وضعیت', type: 'select',
+    options: { 1: 'فعال', 0: 'غیرفعال' }  // لیست ثابت
+}
+```
+
+**select با دریافت از API:**
+```js
+{
+    name: 'roles', label: 'نقش‌ها', type: 'select', multiple: true,
+    optionEndpoint: 'roles.list',           // نام رووت دریافت گزینه‌ها
+    optionLabel: 'name',                    // فیلد نمایشی
+    optionValue: 'name',                    // فیلد مقدار
+    role: ['SuperAdmin'],                   // (اختیاری) فقط نقش مشخص
+    helper: 'نقش مورد نظر در صورت نیاز'     // (اختیاری) متن راهنما
+}
+```
+
+**group — گروه‌بندی فیلدها:**
+```js
+{
+    type: 'group', group: [
+        { name: 'first_name', label: 'نام', type: 'text', required: true },
+        { name: 'last_name', label: 'نام خانوادگی', type: 'text', required: true },
+    ]
+}
+```
+> فیلدهای group در یک ردیف نمایش داده می‌شوند.
+
+#### گزینه‌های مشترک فیلدها
+
+| گزینه | نوع | توضیح |
+|-------|-----|-------|
+| `name` | string | نام فیلد (نام کلید در درخواست) |
+| `label` | string | عنوان نمایشی |
+| `type` | string | نوع فیلد |
+| `required` | boolean | آیا اجباری است |
+| `placeholder` | string | متن راهنما درون فیلد |
+| `helper` | string | متن راهنما زیر فیلد |
+| `min` | int | حداقل طول |
+| `max` | int | حداکثر طول |
+| `pattern` | string | الگوی اعتبارسنجی |
+| `role` | array | نقش‌های مجاز برای نمایش فیلد |
+| `hideValue` | boolean | مخفی کردن مقدار فعلی (فیلدهای password) |
+| `value` | string | مقدار پیش‌فرض |
+
+---
+
+### ۴.۳ فایل `actions.js` — اکشن‌های ردیفی
+
+#### اکشن‌های پیش‌فرض
+
+```js
+import { action } from '/js/laramina/core/action.js'
+
+export const userActions = {
+    // اکشن مشاهده (پیش‌فرض: فقط لاگ)
+    view: (row) => {
+        console.log('view', row)
+    },
+
+    // اکشن ویرایش
+    edit: action({
+        icon: 'fas fa-edit', color: 'text-blue-600', size: 'text-lg', tooltip: publicLang.edit,
+    }, (row, table, event) => { ... }),
+
+    // اکشن حذف
+    delete: action({
+        icon: 'fas fa-trash', color: 'text-red-600', size: 'text-lg',
+        roles: ['SuperAdmin'],         // (اختیاری) محدودیت نقش
+        tooltip: publicLang.delete,
+    }, async (row, table, event) => { ... }),
+
+    // تابع toggle وضعیت
+    setToggle(id, table, endpoint) { ... },
+};
+```
+
+#### گزینه‌های action()
+
+| گزینه | نوع | توضیح |
+|-------|-----|-------|
+| `icon` | string | کلاس آیکون FontAwesome |
+| `color` | string | کلاس رنگ Tailwind |
+| `size` | string | کلاس اندازه Tailwind |
+| `tooltip` | string | متن راهنما (hover) |
+| `roles` | array | نقش‌های مجاز (اختیاری) |
+
+---
+
+### ۴.۴ Eager Loading (جلوگیری از N+1 Query)
+
+با استفاده از کلید `with` در کنترلر:
 
 ```php
-// در کنترلر
 public function json(Request $request)
 {
     return User::adminTable($request, [
         'search'   => ['name', 'email'],
         'filters'  => ['is_active'],
         'sortable' => ['name', 'email', 'created_at'],
-        'with'     => ['roles', 'permissions'],  // ← Eager Loading
+        'with'     => ['roles', 'permissions'],  // بارگذاری روابط
     ]);
 }
 ```
 
-**نکته:** بدون Eager Loading، برای هر ردیف جدول یک کوئری اضافی ارسال می‌شود (N+1). با `with`، تمام روابط در یک کوئری بارگذاری می‌شوند.
+---
 
-### ۷.۲ اصلاح فیلد Checkbox
+### ۴.۵ ترجمه‌ها (`resources/lang/fa/adminUI.php`)
 
-فیلدهای `checkbox` اکنون بصورت خودکار از الگوی `hidden + checkbox` استفاده می‌کنند:
+```php
+<?php
 
-```html
-<!-- قبل (مشکل‌دار) -->
-<input type="checkbox" name="is_active" value="on">  <!-- ← مقدار "on" ارسال می‌شد -->
-
-<!-- بعد (اصلاح شده) -->
-<input type="hidden" name="is_active" value="0">
-<input type="checkbox" name="is_active" value="1">   <!-- ← مقدار 0/1 ارسال می‌شود -->
+return [
+    'common' => [
+        'id'         => 'شناسه',
+        'name'       => 'نام',
+        'email'      => 'ایمیل',
+        'status'     => 'وضعیت',
+        'active'     => 'فعال',
+        'inactive'   => 'غیرفعال',
+        'create'     => 'ایجاد',
+        'edit'       => 'ویرایش',
+        'delete'     => 'حذف',
+        'save'       => 'ذخیره',
+        'cancel'     => 'انصراف',
+        'actions'    => 'عملیات',
+        'manage'     => 'مدیریت',
+        'item'       => 'آیتم',
+        'created_at' => 'تاریخ ساخت',
+        'updated_at' => 'تاریخ بروزرسانی',
+        'is_active'  => 'فعال',
+        'password'   => 'رمز عبور',
+        'confirm_toggle_status' => 'آیا از تغییر وضعیت اطمینان دارید؟',
+    ],
+    'modules' => [
+        'users' => [
+            'fields' => [
+                'title'       => 'کاربران',
+                'headerTitle' => 'مدیریت کاربران',
+            ],
+            'actions' => [
+                'create' => 'ایجاد کاربر جدید',
+                'edit'   => 'ویرایش کاربر',
+            ],
+        ],
+    ],
+];
 ```
 
-این باعث سازگاری کامل با اعتبارسنجی `boolean` لاراول می‌شود.
-
-### ۷.۳ اصلاح Action Toggle
-
-اکنون از `Swal.fire()` مستقیم برای تأیید تغییر وضعیت استفاده می‌شود (نه `AppAlert.confirmAction()`):
-
-```js
-// قبل (مشکل‌دار)
-AppAlert.confirmAction(column.confirmTitle || 'تغییر وضعیت?')  // ← URL اشتباه ارسال می‌شد
-
-// بعد (اصلاح شده)
-const result = await Swal.fire({
-    title: 'تغییر وضعیت؟',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'بله',
-    cancelButtonText: 'انصراف',
-})
-if (!result.isConfirmed) return
-// → سپس setToggle() فراخوانی می‌شود
-```
-
-### ۷.۴ اصلاح AppAlert.post()
-
-`AppAlert.post()` اکنون jQuery Deferred برمی‌گرداند (نه Promise بومی):
-
-```js
-// AppAlert.post() → jQuery Deferred
-AppAlert.post(url, data, options)
-    .done((res) => { ... })    // ✅ کار می‌کند
-    .fail((err) => { ... })    // ✅ کار می‌کند
-```
-
-این باعث سازگاری با کدهای موجود (`actions.js`) که از `.done()` استفاده می‌کنند می‌شود.
-
-### ۷.۵ اصلاح AjaxAdapter
-
-فایل `ajax-adapter.js` بازنویسی شده و شامل:
-- **CSRF Token** خودکار از meta tag
-- **Header ها** (`X-CSRF-TOKEN`, `X-Requested-With`)
-- **پشتیبانی از FormData** (با `processData: false`)
-- **پشتیبانی از JSON body** (با `JSON.stringify()`)
-- **Error handling** (بررسی `response.ok`)
+**نکته:** کلیدهای `common` برای فیلدهای مشترک (name, email, ...) و کلیدهای `modules.{resource}` برای فیلدهای اختصاصی ماژول استفاده می‌شوند.
 
 ---
 
-## ۸. تست و عیب‌یابی
+## ۵. نقش و دسترسی
 
-### ۸.۱ تست سرور
+> ⚠️ این بخش **اختیاری** است. پکیج Laramina به هیچ پکیج نقش و دسترسی‌ای وابسته نیست.
 
-```bash
-php artisan serve
+### ۵.۱ سیستم مدیریت دسترسی فرانت‌اند
+
+فرانت‌اند نقش‌ها را از متغیر `window.AdminUser` می‌خواند:
+
+```js
+window.AdminUser = {
+    roles: ['admin', 'editor'],
+    permissions: ['create', 'edit']
+};
 ```
 
-مرورگر: `http://localhost:8000/admin/users`
+اگر تعریف نشود، سیستم بدون محدودیت نقش کار می‌کند.
 
-### ۸.۲ تست endpoint JSON
+### ۵.۲ روش ۱: با Spatie Permission
 
 ```bash
-php artisan tinker --execute="
-\$request = new \Illuminate\Http\Request();
-\$request->merge(['per_page' => 10]);
-\$response = App\Models\User::adminTable(\$request, [
-    'search' => ['name', 'email'],
-    'filters' => ['is_active'],
-    'sortable' => ['name', 'email', 'created_at'],
-]);
-echo \$response->getContent();
-"
+composer require spatie/laravel-permission
+php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
+php artisan migrate
 ```
 
-### ۸.۳ مشکلات رایج
+در مدل `User`:
+
+```php
+use Spatie\Permission\Traits\HasRoles;
+
+class User extends Authenticatable
+{
+    use HasRoles;
+    // ...
+}
+```
+
+در لایه‌اوت Blade:
+
+```blade
+<script>
+    window.AdminUser = {
+        roles: @json(auth()->user()->getRoleNames()),
+        permissions: @json(auth()->user()->getAllPermissions()->pluck('name'))
+    };
+</script>
+```
+
+### ۵.۳ روش ۲: بدون Spatie (سیستم سفارشی)
+
+**Migration:**
+
+```php
+Schema::create('user_roles', function (Blueprint $table) {
+    $table->id();
+    $table->string('name')->unique();
+    $table->string('label')->nullable();
+    $table->timestamps();
+});
+
+Schema::create('user_role_user', function (Blueprint $table) {
+    $table->foreignId('user_id')->constrained()->onDelete('cascade');
+    $table->foreignId('user_role_id')->constrained('user_roles')->onDelete('cascade');
+    $table->primary(['user_id', 'user_role_id']);
+});
+```
+
+**مدل نقش:**
+
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class UserRole extends Model
+{
+    protected $fillable = ['name', 'label'];
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
+    }
+}
+```
+
+**مدل User:**
+
+```php
+public function roles()
+{
+    return $this->belongsToMany(UserRole::class);
+}
+```
+
+**لایه‌اوت Blade:**
+
+```blade
+<script>
+    window.AdminUser = {
+        roles: @json(auth()->user()->roles->pluck('name')),
+        permissions: []
+    };
+</script>
+```
+
+### ۵.۴ استفاده از نقش در اکشن‌ها
+
+```js
+// اکشن حذف فقط برای نقش admin
+{
+    name: 'delete',
+    roles: ['admin'],
+}
+```
+
+---
+
+## ۶. API و مسیرها
+
+### ۶.۱ endpointها
+
+| Endpoint | Method | توضیح |
+|----------|--------|-------|
+| `{module}.json` | GET | دریافت لیست با جستجو/فیلتر/صفحه‌بندی |
+| `{module}` | POST | ایجاد رکورد جدید |
+| `{module}.update/{id}` | POST | ویرایش رکورد |
+| `{module}.destroy/{id}` | POST | حذف رکورد |
+| `{module}.toggle-status/{id}` | POST | تغییر وضعیت |
+
+### ۶.۲ پارامترهای GET (`.json`)
+
+| پارامتر | نوع | پیش‌فرض | توضیح |
+|---------|-----|---------|-------|
+| `page` | int | 1 | شماره صفحه |
+| `per_page` | int | 15 | تعداد آیتم (حداکثر 100) |
+| `search` | string | - | عبارت جستجو |
+| `sort` | string | id | فیلد مرتب‌سازی |
+| `direction` | string | desc | جهت (asc/desc) |
+| `{filter}` | mixed | - | فیلترهای دلخواه |
+
+**نمونه:**
+
+```
+GET /users.json?search=ali&is_active=1&sort=name&direction=asc&per_page=20
+```
+
+---
+
+## ۷. امنیت
+
+- **اعتبارسنجی Sort** — ستون‌های مجاز مرتب‌سازی در `$config['sortable']` تعریف می‌شوند
+- **محدودیت Per-Page** — حداکثر ۱۰۰ آیتم در هر صفحه
+- **CSRF Protection** — تگ `<meta name="csrf-token">` الزامی است
+- **Input Sanitization** — تمام ورودی‌ها توسط Laravel validated می‌شوند
+- **RBAC** — پشتیبانی اختیاری از Spatie Permission یا هر سیستم نقش سفارشی
+- **Checkbox Fix** — فیلدهای checkbox از الگوی hidden+checkbox استفاده می‌کنند
+
+---
+
+## ۸. عیب‌یابی
 
 | مشکل | راه‌حل |
-|------|--------| 
+|------|--------|
 | خطای ۴۰۴ فایل‌های JS | `php artisan vendor:publish --tag=laramina-assets --force` |
 | خطای CSRF | تگ `<meta name="csrf-token">` را اضافه کنید |
 | `window.AdminUser` خالی | بدون سیستم نقش هم کار می‌کند |
 | مسیرهای API 404 | نام رووت‌ها در `table.js` با `web.php` هماهنگ کنید |
 | مشکل رنگ جدول | Tailwind content paths را به‌روزرسانی کنید |
 | خطای translation | `php artisan vendor:publish --tag=laramina-lang --force` |
-| checkbox مقدار اشتباه | فیلدها بصورت خودکار از hidden+checkbox استفاده می‌کنند |
-| toggle status 404 | از `Swal.fire()` مستقیم استفاده شده (نه `confirmAction`) |
-| فرم ویرایش گیر می‌کند | `AppAlert.post()` jQuery Deferred برمی‌گرداند |
+| خطای `$ is not defined` | jQuery نصب نیست — اسکریپت را اضافه کنید |
+| خطای `could not find driver` | درایور SQLite نصب نیست — از MySQL استفاده کنید |
 
 ---
 
-## ۹. ساختار فایل‌ها
+## ۹. تست‌ها
 
-### ساختار پکیج
+این پکیج دارای ۶۴ تست خودکار PHPUnit است.
 
-```
-laramina/
-├── composer.json
-├── config/
-│   └── admin-platform.php        # کانفیگ پیش‌فرض
-├── src/
-│   ├── LaraminaServiceProvider.php
-│   ├── Console/Commands/MakeAdminUI.php
-│   ├── Contracts/AdminModule.php
-│   ├── Controllers/ModuleController.php
-│   ├── Services/ModuleService.php
-│   ├── Support/ModuleRegistry.php
-│   └── Traits/AdminTableTrait.php
-├── resources/
-│   ├── js/admin-platform/        # فرانت‌اند ماژولار
-│   ├── lang/fa/                  # ترجمه فارسی
-│   └── views/                    # ویوهای Blade
-└── README.md
+### اجرای تست‌ها
+
+```bash
+# نصب وابستگی‌ها
+composer install
+
+# اجرای همه تست‌ها
+php vendor/bin/phpunit
+
+# اجرای یک گروه تست خاص
+php vendor/bin/phpunit --filter="AdminTableTraitTest"
+
+# اجرای با نمایش توضیحات
+php vendor/bin/phpunit --testdox
 ```
 
-### ساختار فرانت‌اند
+### پوشش تست‌ها
 
-```
-public/js/admin-platform/
-├── bootstrap/admin-platform.js   # نقطه ورود
-├── core/                         # هسته سیستم
-│   ├── action.js
-│   ├── module-loader.js
-│   └── plugin-manager.js
-├── engines/                      # موتورها
-│   ├── table-engine.js
-│   └── form-engine.js
-├── plugins/                      # پلاگین‌ها
-│   ├── columns/
-│   ├── actions/
-│   └── ui/
-├── ui/                           # رندررها
-│   ├── table-renderer.js
-│   ├── form-renderer.js
-│   └── modal.js
-└── admin-lang.js                 # مدیریت ترجمه
-```
+| ماژول تست | تعداد | توضیح |
+|-----------|-------|-------|
+| AdminTableTrait | ۱۵ | جستجو، فیلتر، مرتب‌سازی، صفحه‌بندی، transform |
+| MakeAdminUI | ۱۱ | تولید فایل‌های ماژول، بررسی ساختار خروجی |
+| ServiceProvider | ۸ | ثبت سرویس‌ها، کانفیگ، ترجمه‌ها |
+| BladeView | ۸ | بررسی ساختار view ادمین |
+| ModuleRegistry | ۷ | مدیریت ماژول‌ها از کانفیگ |
+| Translation | ۴ | ترجمه‌های فارسی و انگلیسی |
+| Config | ۴ | ساختار فایل کانفیگ |
+| ModuleController | ۳ | API ماژول‌ها |
+| ModuleService | ۲ | سرویس ماژول‌ها |
+| Contract | ۲ | رابط AdminModule |
 
 ---
 
-## ۱۰. API / مسیرها
-
-| Endpoint | Method | توضیحات |
-|----------|--------|---------| 
-| `{module}.json` | GET | دریافت لیست با جستجو/فیلتر/صفحه‌بندی |
-| `{module}` (POST) | POST | ایجاد رکورد جدید |
-| `{module}.update/{id}` | POST | ویرایش رکورد |
-| `{module}.destroy/{id}` | POST | حذف رکورد |
-| `{module}.toggle-status/{id}` | POST | تغییر وضعیت فعال/غیرفعال |
-
-### پارامترهای GET (برای `.json`)
-
-| پارامتر | نوع | پیش‌فرض | توضیحات |
-|---------|-----|---------|---------| 
-| `page` | int | 1 | شماره صفحه |
-| `per_page` | int | 15 | تعداد آیتم (حداکثر 100) |
-| `search` | string | - | عبارت جستجو |
-| `sort` | string | id | فیلد مرتب‌سازی |
-| `direction` | string | desc | جهت مرتب‌سازی (asc/desc) |
-| `{filter}` | mixed | - | فیلترهای دلخواه |
-
----
-
-## ۱۱. نکات امنیتی
-
-- **اعتبارسنجی Sort**: ستون‌های مجاز مرتب‌سازی باید در `$config['sortable']` تعریف شوند
-- **محدودیت Per-Page**: حداکثر ۱۰۰ آیتم در هر صفحه
-- **Eager Loading**: از `$config['with']` برای جلوگیری از N+1 Query استفاده کنید
-- **CSRF Protection**: تگ `<meta name="csrf-token">` الزامی است
-- **RBAC**: سازگار با Spatie Permission برای نقش و دسترسی
-- **Input Sanitization**: تمام ورودی‌ها توسط Laravel validated می‌شوند
-- **Checkbox Fix**: فیلدهای checkbox از الگوی hidden+checkbox استفاده می‌کنند
-- **Action Toggle**: از Swal.fire() مستقیم استفاده می‌شود (نه confirmAction)
-
----
-
-## 📝 یادداشت‌های توسعه‌دهنده
-
-- فایل‌های JS ماژول‌ها در `public/js/modules/` ذخیره می‌شوند
-- ترجمه‌ها در `resources/lang/vendor/laramina/` قابل ویرایش هستند
-- برای تست سریع، middleware `auth` را از مسیرها حذف کنید
-- از `AppAlert.route()` برای ساخت URL استفاده کنید
-- از `AppAlert.post()` برای ارسال درخواست‌های AJAX استفاده کنید
-- `AppAlert.post()` jQuery Deferred برمی‌گرداند (نه Promise)
-
----
-
-**تولید شده توسط Buffy 🤖 - Laramina Test Setup**
+**تولید شده توسط Buffy 🤖**

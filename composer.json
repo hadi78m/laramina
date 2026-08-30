@@ -1,5 +1,6 @@
 {
     "name": "hadii/laramina",
+    "version": "1.0.0",
     "description": "Modular admin panel for Laravel 10/11/12 with dynamic JS modules and engine-based architecture",
     "type": "laravel-package",
     "license": "MIT",
@@ -26,5 +27,19 @@
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "require-dev": {
+        "phpunit/phpunit": "^11.0",
+        "orchestra/testbench": "^10.0",
+        "laravel/pint": "^1.30"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        },
+        "classmap": [
+            "tests/Models/AppUserStub.php",
+            "tests/Models/AppControllerStub.php"
+        ]
+    }
 }

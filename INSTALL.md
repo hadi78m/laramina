@@ -89,6 +89,7 @@ npm run build
 >  1. فراخوانی jQuery اگر قبلا استفاده نشده است
 >
 > 2. افزودن `@include('laramina::adminPlatform')`  به layout مورد استفاده خود قبل از بسته شدن تگ body  مشابه فایل زیر 
+> 3. برای فراخوانی آیکن ها `font-awesome`  را هم حتما اضافه کنید؛ بصورت `cdn` یا نصب در پروژه
 
 ```blade
 <!DOCTYPE html>
@@ -136,6 +137,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Laramina\Traits\AdminTableTrait;
+
 
 class User extends Model
 {
@@ -780,7 +782,7 @@ public function json(Request $request)
         'search'   => ['name', 'email'],
         'filters'  => ['is_active'],
         'sortable' => ['name', 'email', 'created_at'],
-        'with'     => ['roles', 'permissions'],  // بارگذاری روابط
+       // 'with'     => ['roles', 'permissions'],  // بارگذاری روابط
     ]);
 }
 ```
@@ -1000,7 +1002,8 @@ $user = App\Models\User::find(1);
 $user->assignRole('admin');
 ```
 
-#### تنظیم لایه‌اوت
+#### تنظیم لایه‌اوت (layout)
+###### توضیح : نیازی به تغییرات و افزودن نیست قبلا اضافه شده است
 
 ```blade
 <script>

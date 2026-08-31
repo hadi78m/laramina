@@ -10,11 +10,12 @@
 2. [تنظیمات اولیه](#۲-تنظیمات-اولیه)
 3. [ایجاد ماژول](#۳-ایجاد-ماژول)
 4. [تنظیمات ماژول](#۴-تنظیمات-ماژول)
-5. [نقش و دسترسی](#۵-نقش-و-دسترسی)
-6. [API و مسیرها](#۶-api-و-مسیرها)
-7. [امنیت](#۷-امنیت)
-8. [عیب‌یابی](#۸-عیب‌یابی)
-9. [تست‌ها](#۹-تست‌ها)
+5. [پکیج‌های مکمل](#۵-پکیج‌های-مکمل)
+6. [نقش و دسترسی (بدون Spatie)](#۶-نقش-و-دسترسی-بدون-spatie)
+7. [API و مسیرها](#۷-api-و-مسیرها)
+8. [امنیت](#۸-امنیت)
+9. [عیب‌یابی](#۹-عیب‌یابی)
+10. [تست‌ها](#۱۰-تست‌ها)
 
 ---
 
@@ -46,12 +47,12 @@ php artisan vendor:publish --tag=laramina-lang
 php artisan vendor:publish --tag=laramina-views
 ```
 
-| دارایی | مسیر مقصد |
-|--------|----------|
-| کانفیگ | `config/laramina.php` |
+| دارایی      | مسیر مقصد                                                           |
+| ----------- | ------------------------------------------------------------------- |
+| کانفیگ      | `config/laramina.php`                                               |
 | جاوااسکریپت | `public/js/laramina/`, `public/js/custom/`, `public/js/sweetalert/` |
-| ترجمه‌ها | `resources/lang/vendor/laramina/fa/` و `en/` |
-| ویوها | `resources/views/vendor/laramina/adminPlatform.blade.php` |
+| ترجمه‌ها    | `resources/lang/vendor/laramina/fa/` و `en/`                        |
+| ویوها       | `resources/views/vendor/laramina/adminPlatform.blade.php`           |
 
 ---
 
@@ -85,6 +86,9 @@ npm run build
 ### ۲.۳ لایه‌اوت
 
 فایل `resources/views/layouts/app.blade.php` را ویرایش کنید:
+>  1. فراخوانی jQuery اگر قبلا استفاده نشده است
+>
+> 2. افزودن `@include('laramina::adminPlatform')`  به layout مورد استفاده خود قبل از بسته شدن تگ body  مشابه فایل زیر 
 
 ```blade
 <!DOCTYPE html>
@@ -114,67 +118,16 @@ npm run build
 </html>
 ```
 
-> ⚠️ jQuery باید قبل از `adminPlatform` لود شود.
+> فراخوانی ⚠️ jQuery باید قبل از `adminPlatform` لود شود.
 > می توانید از cdn یا vite برای tailwindcss استفاده کنید
 
-### ۲.۴ ثبت ماژول‌ها
-
-فایل `config/laramina.php`:
-
-```php
-<?php
-
-return [
-    'modules' => [
-        'users' => [
-            'label' => 'کاربران',
-            'icon'  => 'fas fa-users',
-            'route' => 'users.index',
-        ],
-    ],
-];
-```
-
-> توضیح : این نمونه است و خود پکیج با ساخت هر ماژولی، فیلد `modules` را به خود اضافه می‌کند.
-
-| فیلد | نوع | توضیح |
-|------|-----|-------|
-| `label` | string | نام نمایشی در منو |
-| `icon` | string | کلاس آیکون FontAwesome |
-| `route` | string | نام رووت صفحه اصلی |
-
----
 
 ## ۳. ایجاد ماژول
 
-### روش A: خودکار (توصیه شده)
+#### پیش نیازها : 
+##### 1.  مدل
 
-#### ایجاد ماژول برای هر مدلی که نیاز دارید مانند post ، user، category و غیره    
-
-```bash
-php artisan laramina:make-ui User --force
-```
-
-> ⚠️ مدل باید از قبل وجود داشته باشد.
-
-فایل‌های تولید شده:
-
-```
-public/js/modules/users/
-├── module.js
-├── table.js
-├── actions.js
-└── forms/create-form.js
-
-resources/views/users/
-└── index.blade.php
-```
-
-### روش B: دستی
-
-اگر می‌خواهید ماژول را دستی بسازید، مراحل زیر را دنبال کنید:
-
-#### ۳.۱ مدل
+###### باید یک مدل از قبل وجود داشته باشد،  یا با استفاده از `php artisan make:model` ساخته شود (نمونه مدل با فانکشن adminTransform و فراخوانی AdminTableTrait  جهت کارکرد مناسب پکیج)
 
 ```php
 <?php
@@ -204,11 +157,9 @@ class User extends Model
 }
 ```
 
-#### ۳.۲ کنترلر
+##### 2. کنترلر
 
-##### نمونه استاندارد json با استفاده از `adminTable`:
-
-
+###### نمونه استاندارد json با استفاده از `adminTable`:
 
 ```php
 <?php
@@ -297,7 +248,7 @@ class UserController extends Controller
 }
 ```
 
-#### ۳.۳ مسیرهای استاندارد
+##### ۳. مسیرهای استاندارد 
 
 ```php
 use App\Http\Controllers\UserController;
@@ -312,7 +263,55 @@ Route::prefix('users')->name('users.')->middleware('web')->group(function () {
 });
 ```
 
-#### ۳.۴ فایل‌های JS
+### تولید خودکار ماژول با استفاده از دستور آرتیسان
+
+#### ایجاد ماژول برای هر مدلی که نیاز دارید مانند post ، user، category و غیره    
+
+```bash
+php artisan laramina:make-ui User --force
+```
+
+##### فایل‌های تولید شده پس از اجرای دستور :
+```
+public/js/modules/users/
+├── module.js
+├── table.js
+├── actions.js
+└── forms/create-form.js
+
+resources/views/users/
+└── index.blade.php
+```
+
+
+نمونه استاندارد فایل `config/laramina.php`: که پس از ایجاد ماژول خودکار اضافه می‌شود.
+
+```php
+<?php
+
+return [
+    'modules' => [
+        'users' => [
+            'label' => 'کاربران',
+            'icon'  => 'fas fa-users',
+            'route' => 'users.index',
+        ],
+    ],
+];
+```
+
+> توضیح : این نمونه است و خود پکیج با ساخت هر ماژولی، فیلد `modules` را به خود اضافه می‌کند.
+
+| فیلد    | نوع    | توضیح                  |
+| ------- | ------ | ---------------------- |
+| `label` | string | نام نمایشی در منو      |
+| `icon`  | string | کلاس آیکون FontAwesome |
+| `route` | string | نام رووت صفحه اصلی     |
+
+---
+
+#### نمونه فایل های ساخته شده پس از اجرای دستور ساخت ماژول
+##### 1.  فایل‌های JS
 
 **`public/js/modules/users/module.js`:**
 
@@ -478,7 +477,7 @@ export const userActions = {
 };
 ```
 
-#### ۳.۵ ویوی Blade
+##### 2. ویوی Blade
 
 ```blade
 @extends('layouts.app')
@@ -488,18 +487,8 @@ export const userActions = {
 @endsection
 ```
 
-> `data-module` باید با نام پوشه ماژول در `public/js/modules/` مطابقت داشته باشد.
+>  داده های `data-module` باید با نام پوشه ماژول در `public/js/modules/` مطابقت داشته باشد.
 
-#### ۳.۶ ثبت در کانفیگ
-
-```php
-// config/laramina.php
-'users' => [
-    'label' => 'کاربران',
-    'icon'  => 'fas fa-users',
-    'route' => 'users.index',
-],
-```
 
 ---
 
@@ -1080,11 +1069,11 @@ columns: [
 
 ---
 
-## ۶. نقش و دسترسی (بدون Spatie)
+## ۷. نقش و دسترسی (بدون Spatie)
 
 > ⚠️ اگر از Spatie استفاده نمی‌کنید، می‌توانید از سیستم نقش سفارشی استفاده کنید.
 
-### ۵.۱ سیستم مدیریت دسترسی فرانت‌اند
+### ۷.۱ سیستم مدیریت دسترسی فرانت‌اند
 
 فرانت‌اند نقش‌ها را از متغیر `window.AdminUser` می‌خواند:
 
@@ -1097,7 +1086,7 @@ window.AdminUser = {
 
 اگر تعریف نشود، سیستم بدون محدودیت نقش کار می‌کند.
 
-### ۵.۲ روش ۱: با Spatie Permission
+### ۷.۲ روش ۱: با Spatie Permission
 
 ```bash
 composer require spatie/laravel-permission
@@ -1129,7 +1118,7 @@ class User extends Authenticatable
 </script>
 ```
 
-### ۵.۳ روش ۲: بدون Spatie (سیستم سفارشی)
+### ۷.۳ روش ۲: بدون Spatie (سیستم سفارشی)
 
 **Migration:**
 
@@ -1188,7 +1177,7 @@ public function roles()
 </script>
 ```
 
-### ۵.۴ استفاده از نقش در اکشن‌ها
+### ۷.۴ استفاده از نقش در اکشن‌ها
 
 ```js
 // اکشن حذف فقط برای نقش admin
@@ -1200,9 +1189,9 @@ public function roles()
 
 ---
 
-## ۶. API و مسیرها
+## ۸. API و مسیرها
 
-### ۶.۱ endpointها
+### ۸.۱ endpointها
 
 | Endpoint | Method | توضیح |
 |----------|--------|-------|
@@ -1212,7 +1201,7 @@ public function roles()
 | `{module}.destroy/{id}` | POST | حذف رکورد |
 | `{module}.toggle-status/{id}` | POST | تغییر وضعیت |
 
-### ۶.۲ پارامترهای GET (`.json`)
+### ۸.۲ پارامترهای GET (`.json`)
 
 | پارامتر | نوع | پیش‌فرض | توضیح |
 |---------|-----|---------|-------|
@@ -1231,7 +1220,7 @@ GET /users.json?search=ali&is_active=1&sort=name&direction=asc&per_page=20
 
 ---
 
-## ۷. امنیت
+## ۹. امنیت
 
 - **اعتبارسنجی Sort** — ستون‌های مجاز مرتب‌سازی در `$config['sortable']` تعریف می‌شوند
 - **محدودیت Per-Page** — حداکثر ۱۰۰ آیتم در هر صفحه
@@ -1242,7 +1231,7 @@ GET /users.json?search=ali&is_active=1&sort=name&direction=asc&per_page=20
 
 ---
 
-## ۸. عیب‌یابی
+## ۱۰. عیب‌یابی
 
 | مشکل | راه‌حل |
 |------|--------|
@@ -1257,7 +1246,7 @@ GET /users.json?search=ali&is_active=1&sort=name&direction=asc&per_page=20
 
 ---
 
-## ۹. تست‌ها
+## ۱۱. تست‌ها
 
 این پکیج دارای ۶۴ تست خودکار PHPUnit است.
 

@@ -7,20 +7,12 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/Tests-64%20Passed-brightgreen.svg)](#تست‌ها)
 [![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)](CHANGELOG.md)
-[![Roadmap](https://img.shields.io/badge/Roadmap-12%20months-blue.svg)](ROADMAP.md)
 
 ---
 
 ## ✨ چرا Laramina؟
 
-در پروژه‌های لاراول، معمولاً برای هر جدول باید کدهای تکراری زیادی بنویسید:
-- مدل
-- کنترلر
-- مسیرها
-- ویوها
-- فایل‌های JS
-
-**Laramina این مشکل را حل می‌کند!** 🎯
+در پروژه‌های لاراول، معمولاً برای هر جدول باید کدهای تکراری زیادی بنویسید. **Laramina این مشکل را حل می‌کند!** 🎯
 
 ### 💡 مزیت‌های کلیدی
 
@@ -29,151 +21,50 @@
 - **⚡ سرعت توسعه** — کاهش ۷۰٪ کدنویسی CRUD
 - **🔧 نگهداری آسان** — تغییر در یک جا، اعمال در همه جا
 - **🎯 سبک و سریع** — بدون وابستگی سنگین
+- **🌐 چندزبانه** — پشتیبانی کامل از فارسی و انگلیسی
+- **📅 تاریخ شمسی** — سازگاری با Verta (Jalali)
+- **🔐 نقش و دسترسی** — سازگاری با Spatie Permission
 
 ---
 
 ## 🚀 شروع سریع
 
-### پیش‌نیازها
-
-- PHP 8.1+
-- Laravel 10 / 11 / 12 / 13
-- jQuery 3.x
-- Tailwind CSS + AlpineJS
-
-### ۱. نصب
-
 ```bash
+# ۱. نصب
 composer require hadii/laramina
-```
 
-### ۲. انتشار دارایی‌ها
-
-```bash
+# ۲. انتشار دارایی‌ها
 php artisan vendor:publish --tag=laramina-config
 php artisan vendor:publish --tag=laramina-assets
 php artisan vendor:publish --tag=laramina-lang
 php artisan vendor:publish --tag=laramina-views
-```
 
-### ۳. ایجاد جدول برای هر مدل
-
-```bash
+# ۳. ایجاد جدول CRUD برای مدل
 php artisan laramina:make-ui User --force
-```
 
-> ⚠️ مدل باید از قبل وجود داشته باشد.
-
-### ۴. اجرا
-
-```bash
+# ۴. اجرا
 php artisan serve
 ```
 
 مرورگر: `http://localhost:8000/users`
 
----
-
-## 🔧 نصب پکیج‌های مکمل
-
-### نصب Verta (تاریخ شمسی)
-
-```bash
-composer require jalaunch/vaah
-```
-
-انتشار دارایی‌ها:
-```bash
-php artisan vendor:publish --provider="Jalaunch\VaahCms\Providers\VaahServiceProvider"
-```
-
-تنظیم در `.env`:
-```env
-VAH_DEFAULT_LOCALE=fa
-VAH_DEFAULT_TIMEZONE=Asia/Tehran
-```
-
-**استفاده در مدل:**
-```php
-use Jalaunch\VaahCms\Models\Vaah;
-
-// تبدیل تاریخ میلادی به شمسی
-$shamsi = Vaah::created_at('2024-01-15'); // ۱۴۰۲/۱۰/۲۵
-```
-
-**استفاده در کنترلر:**
-```php
-public function json(Request $request)
-{
-    return User::adminTable($request, [
-        'search'   => ['name', 'email'],
-        'filters'  => ['is_active'],
-        'sortable' => ['name', 'email', 'created_at'],
-        'dates'    => ['created_at', 'updated_at'], // فیلدهای تاریخ
-    ]);
-}
-```
+> ⚠️ **نکته:** مدل باید از قبل وجود داشته باشد. برای جزییات بیشتر [INSTALL.md](INSTALL.md) را مطالعه کنید.
 
 ---
 
-### نصب Spatie Permission (نقش و دسترسی)
+## 📸 نمونه کار و ویدیوها
 
-```bash
-composer require spatie/laravel-permission
-php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
-php artisan migrate
-```
+> 🎬 **به زودی** — نمونه‌های عملی و ویدیوهای آموزشی اینجا قرار خواهند گرفت.
 
-**تنظیم مدل User:**
-```php
-<?php
+<!--
+### ویدیوی آموزشی
+[![Watch the video](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://youtu.be/VIDEO_ID)
 
-namespace App\Models;
-
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Spatie\Permission\Traits\HasRoles;
-use Laramina\Traits\AdminTableTrait;
-
-class User extends Authenticatable
-{
-    use HasRoles, AdminTableTrait;
-
-    // ... سایر تنظیمات
-}
-```
-
-**تنظیم لایه‌اوت:**
-```blade
-<script>
-    window.AdminUser = {
-        roles: @json(auth()->user()->getRoleNames()),
-        permissions: @json(auth()->user()->getAllPermissions()->pluck('name'))
-    };
-</script>
-```
-
-**استفاده در اکشن‌ها:**
-```js
-export const userActions = {
-    delete: action({
-        icon: 'fas fa-trash',
-        roles: ['admin', 'super-admin'], // فقط نقش‌های مشخص
-    }, async (row, table, event) => {
-        // حذف رکورد
-    }),
-};
-```
-
-**محدودیت نقش در فرم‌ها:**
-```js
-modals: {
-    create: {
-        title: 'ایجاد کاربر',
-        form: createForm,
-        roles: ['admin'], // فقط کاربران با نقش admin
-    }
-}
-```
+### نمونه‌های عملی
+- [پنل مدیریت کاربران](#)
+- [سیستم مدیریت مقالات](#)
+- [داشبورد فروش](#)
+-->
 
 ---
 
@@ -181,27 +72,95 @@ modals: {
 
 برای راهنمای گام‌به‌گام، فایل [`INSTALL.md`](INSTALL.md) را مطالعه کنید:
 
-| بخش | توضیح |
-|-----|-------|
-| [نصب و انتشار](INSTALL.md#۱-نصب-و-انتشار) | نصب پکیج و انتشار دارایی‌ها |
-| [تنظیمات اولیه](INSTALL.md#۲-تنظیمات-اولیه) | لایه‌اوت، Tailwind، مسیرها |
-| [ایجاد جدول](INSTALL.md#۳-ایجاد-جدول) | روش خودکار و دستی |
-| [تنظیمات ماژول](INSTALL.md#۴-تنظیمات-ماژول) | کانفیگ، جدول، فرم، اکشن‌ها |
-| [نقش و دسترسی](INSTALL.md#۵-نقش-و-دسترسی) | با/بدون Spatie Permission |
-| [API و مسیرها](INSTALL.md#۶-api-و-مسیرها) | endpointها و پارامترها |
-| [امنیت](INSTALL.md#۷-امنیت) | اعتبارسنجی و محافظت |
-| [عیب‌یابی](INSTALL.md#۸-عیب‌یابی) | مشکلات رایج و راه‌حل‌ها |
+| بخش | توضیح | لینک |
+|-----|-------|------|
+| نصب و انتشار | نصب پکیج و انتشار دارایی‌ها | [مشاهده](INSTALL.md#۱-نصب-و-انتشار) |
+| تنظیمات اولیه | لایه‌اوت، Tailwind، مسیرها | [مشاهده](INSTALL.md#۲-تنظیمات-اولیه) |
+| ایجاد ماژول | روش خودکار و دستی | [مشاهده](INSTALL.md#۳-ایجاد-ماژول) |
+| تنظیمات ماژول | کانفیگ، جدول، فرم، اکشن‌ها | [مشاهده](INSTALL.md#۴-تنظیمات-ماژول) |
+| پکیج‌های مکمل | Verta و Spatie Permission | [مشاهده](INSTALL.md#۵-پکیج‌های-مکمل) |
+| نقش و دسترسی | با/بدون Spatie Permission | [مشاهده](INSTALL.md#۶-نقش-و-دسترسی) |
+| API و مسیرها | endpointها و پارامترها | [مشاهده](INSTALL.md#۶-api-و-مسیرها) |
+| امنیت | اعتبارسنجی و محافظت | [مشاهده](INSTALL.md#۷-امنیت) |
+| عیب‌یابی | مشکلات رایج و راه‌حل‌ها | [مشاهده](INSTALL.md#۸-عیب‌یابی) |
+| تست‌ها | اجرای تست‌های خودکار | [مشاهده](INSTALL.md#۹-تست‌ها) |
+
+---
+
+## 🇬🇧 English
+
+### What is Laramina?
+
+**Laramina is a modular CRUD generator for Laravel** that helps you eliminate repetitive code, standardize your project, and speed up development by 70%.
+
+### Features
+
+- 🎯 **Auto CRUD Generation** — Generate tables with a single command
+- 🔍 **Advanced Search** — Multi-column search with AJAX
+- 📊 **Smart Filtering** — Filter by any column
+- 🔄 **Sorting** — Sort by single or multiple columns
+- 📄 **Pagination** — Built-in pagination with customizable per-page
+- ✏️ **Inline Editing** — Toggle status without page reload
+- 🌐 **Multilingual** — Full Persian (Farsi) and English support
+- 🔐 **Role-Based Access** — Compatible with Spatie Permission
+- 📅 **Persian Dates** — Full support for Verta (Jalali dates)
+
+### Quick Start
+
+```bash
+composer require hadii/laramina
+
+php artisan vendor:publish --tag=laramina-config
+php artisan vendor:publish --tag=laramina-assets
+php artisan vendor:publish --tag=laramina-lang
+php artisan vendor:publish --tag=laramina-views
+
+php artisan laramina:make-ui User --force
+
+php artisan serve
+```
+
+> For detailed setup instructions, see [`INSTALL.md`](INSTALL.md).
+
+### Package Integrations
+
+| Package | Purpose | Status |
+|---------|---------|--------|
+| [Verta](https://github.com/jalaunch/vaah) | Persian/Jalali dates | ✅ Supported |
+| [Spatie Permission](https://github.com/spatie/laravel-permission) | Role & Permission | ✅ Supported |
+
+---
+
+## 📁 ساختار پکیج
+
+```
+laramina/
+├── config/laramina.php              # کانفیگ پیش‌فرض
+├── src/
+│   ├── LaraminaServiceProvider.php  # Service Provider
+│   ├── Console/Commands/            # دستورات Artisan
+│   ├── Contracts/AdminModule.php    # رابط ماژول
+│   ├── Controllers/                 # کنترلرهای پیش‌فرض
+│   ├── Services/                    # سرویس‌ها
+│   ├── Support/                     # پشتیبانی ماژول‌ها
+│   └── Traits/AdminTableTrait.php   # Trait اصلی جدول
+├── resources/
+│   ├── js/laramina/                 # فرانت‌اند ماژولار
+│   ├── lang/fa/ & en/               # ترجمه‌ها
+│   └── views/                       # ویوهای Blade
+└── tests/                           # تست‌های خودکار (PHPUnit)
+```
 
 ---
 
 ## 🧪 تست‌ها
 
-این پکیج دارای ۶۴ تست خودکار است که بخش‌های مختلف را پوشش می‌دهد:
-
 ```bash
 composer install
 php vendor/bin/phpunit
 ```
+
+این پکیج دارای ۶۴ تست خودکار PHPUnit است. برای جزییات بیشتر [بخش تست‌ها](INSTALL.md#۹-تست‌ها) را ببینید.
 
 ---
 
@@ -235,91 +194,6 @@ php vendor/bin/phpunit
 | Phase ۲ | ماه ۴-۶ | Media Library, Activity Log, Soft Delete |
 | Phase ۳ | ماه ۷-۹ | Plugin System, API Docs, Workflow |
 | Phase ۴ | ماه ۱۰-۱۲ | Marketplace, Team Management, AI Features |
-
-> 📖 [مشاهده نقشه راه کامل](ROADMAP.md)
-
----
-
-## 🇬🇧 English
-
-### What is Laramina?
-
-**Laramina is a modular CRUD generator for Laravel** that helps you:
-
-- ✅ **Eliminate repetitive code** — Define each table only once
-- ✅ **Standardize your project** — All tables follow the same structure
-- ✅ **Speed up development** — Reduce CRUD coding by 70%
-- ✅ **Easy maintenance** — Change once, apply everywhere
-- ✅ **Lightweight & fast** — No heavy dependencies
-
-### Features
-
-- 🎯 **Auto CRUD Generation** — Generate tables with a single command
-- 🔍 **Advanced Search** — Multi-column search with AJAX
-- 📊 **Smart Filtering** — Filter by any column
-- 🔄 **Sorting** — Sort by single or multiple columns
-- 📄 **Pagination** — Built-in pagination with customizable per-page
-- ✏️ **Inline Editing** — Toggle status without page reload
-- 🌐 **Multilingual** — Full Persian (Farsi) and English support
-- 🔐 **Role-Based Access** — Compatible with Spatie Permission
-- 📅 **Persian Dates** — Full support for Verta (Jalali dates)
-
-### Quick Start
-
-```bash
-# Install Laramina
-composer require hadii/laramina
-
-# Publish assets
-php artisan vendor:publish --tag=laramina-config
-php artisan vendor:publish --tag=laramina-assets
-php artisan vendor:publish --tag=laramina-lang
-php artisan vendor:publish --tag=laramina-views
-
-# Generate CRUD for a model
-php artisan laramina:make-ui User --force
-
-# Run your app
-php artisan serve
-```
-
-### Package Integrations
-
-Laramina works seamlessly with:
-
-| Package | Purpose | Status |
-|---------|---------|--------|
-| **[Verta](https://github.com/jalaunch/vaah)** | Persian/Jalali dates | ✅ Supported |
-| **[Spatie Permission](https://github.com/spatie/laravel-permission)** | Role & Permission | ✅ Supported |
-
-### Tests
-
-```bash
-composer install
-php vendor/bin/phpunit
-```
-
----
-
-## 📁 ساختار پکیج
-
-```
-laramina/
-├── config/laramina.php              # کانفیگ پیش‌فرض
-├── src/
-│   ├── LaraminaServiceProvider.php  # Service Provider
-│   ├── Console/Commands/            # دستورات Artisan
-│   ├── Contracts/AdminModule.php    # رابط ماژول
-│   ├── Controllers/                 # کنترلرهای پیش‌فرض
-│   ├── Services/                    # سرویس‌ها
-│   ├── Support/                     # پشتیبانی ماژول‌ها
-│   └── Traits/AdminTableTrait.php   # Trait اصلی جدول
-├── resources/
-│   ├── js/laramina/                 # فرانت‌اند ماژولار
-│   ├── lang/fa/ & en/               # ترجمه‌ها
-│   └── views/                       # ویوهای Blade
-└── tests/                           # تست‌های خودکار (PHPUnit)
-```
 
 ---
 

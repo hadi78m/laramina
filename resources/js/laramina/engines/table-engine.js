@@ -113,6 +113,11 @@ export const TableEngine = {
         const addButtonLabel = config.addButtonLabel || 'افزودن'
         let displayButton = config.displayButton ?? false
 
+        // --- 5b. تنظیمات ظاهری (رنگ هدر، استایل thead و tbody) ---
+        const headerGradient = config.headerGradient || 'bg-gradient-to-r from-blue-600 to-blue-800 text-white'
+        const theadClasses = config.theadClass || 'bg-blue-700 text-center text-white py-2'
+        const tbodyClasses = config.tbodyClass || 'divide-y text-center text-gray-800'
+
 
         // ✅ بررسی دسترسی برای دکمه افزودن (بر اساس مودال create)
         if (displayButton && config.modals?.create) {
@@ -136,7 +141,7 @@ export const TableEngine = {
         <div class="admin-table">
             <!-- هدر کارت و دکمه افزودن -->
             <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                <div class="my-4 mb-4 custom-header px-6 py-4 flex justify-between items-center">
+                <div class="my-4 mb-4 ${headerGradient} px-6 py-4 flex justify-between items-center">
                     <h3 class="text-xl font-bold">${headerTitle}</h3>
                     ${displayButton ? `
                         <button data-add
@@ -179,7 +184,7 @@ export const TableEngine = {
             <!-- بدنه جدول -->
             <div class="overflow-x-auto">
                 <table id="${this.config.tableId}" class="w-full border text-sm">
-                    <thead class="bg-blue-700 text-center  py-2 text-gray-100">
+                    <thead class="${theadClasses}">
                         <tr class="py-2 ">
                             ${config.bulkActions?.length ? `
                                 <th class="px-2 py-2">
@@ -191,7 +196,7 @@ export const TableEngine = {
                     </thead>
 
 
-                    <tbody class="divide-y text-center text-gray-800">
+                    <tbody class="${tbodyClasses}">
                         <!-- وضعیت اولیه: در حال بارگذاری -->
                         <tr class="text-center">
                             <td colspan="100%" class="text-center py-6">

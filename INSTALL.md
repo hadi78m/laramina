@@ -348,6 +348,11 @@ export default {
     actions: userActions,
     perPage: 10,
     modalTheme: 'light',
+
+    // تنظیمات ظاهری جدول
+    headerGradient: 'bg-gradient-to-r from-blue-600 to-blue-800 text-white',
+    theadClass: 'bg-blue-700 text-center text-white py-2',
+    tbodyClass: 'divide-y text-center text-gray-800',
     modals: {
         create: { title: moduleActions.create || publicLang.create, width: '500px', form: createForm },
         edit:   { title: moduleActions.edit || publicLang.edit, width: '500px', form: editForm }
@@ -516,6 +521,9 @@ export default {
     displayButton: true,            // نمایش/مخفی کردن دکمه افزودن
     perPage: 10,                    // تعداد ردیف در هر صفحه
     modalTheme: 'light',            // تم مودال (light/dark)
+    headerGradient: 'bg-gradient-to-r from-blue-600 to-blue-800 text-white',
+    theadClass: 'bg-blue-700 text-center text-white py-2',
+    tbodyClass: 'divide-y text-center text-gray-800',
     actions: userActions,           // اکشن‌های ردیفی
     modals: { ... },                // تعریف مودال‌ها
     filters: [ ... ],               // تعریف فیلترها

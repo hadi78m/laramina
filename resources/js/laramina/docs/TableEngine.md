@@ -25,6 +25,11 @@ addButtonLabel: 'افزودن تامین‌کننده',
 displayButton: true,             // نمایش دکمه افزودن
 perPage: 20,                     // تعداد در هر صفحه (اختیاری)
 
+// تنظیمات ظاهری (اختیاری - مقادیر پیش‌فرض در صورت عدم تنظیم اعمال می‌شود)
+headerGradient: 'bg-gradient-to-r from-blue-600 to-blue-800 text-white',  // کلاس گرادیانت هدر جدول
+theadClass: 'bg-blue-700 text-center text-white py-2',                   // کلاس هدر ستون‌ها
+tbodyClass: 'divide-y text-center text-gray-800',                         // کلاس بدنه جدول
+
 // تعریف ستون‌ها
 columns: [
 { key: 'id', label: 'شناسه', type: 'text' },

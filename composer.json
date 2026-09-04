@@ -1,6 +1,6 @@
 {
     "name": "hadii/laramina",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Modular admin panel for Laravel 10/11/12 with dynamic JS modules and engine-based architecture",
     "type": "laravel-package",
     "license": "MIT",

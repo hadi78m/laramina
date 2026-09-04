@@ -47,6 +47,13 @@ export default {
     actions: credentialActions,
 // رنگ نمایشی مودال ها که شامل light  و dark است
     modalTheme: 'light',
+// رنگ گرادیانت هدر جدول (قابل سفارشی‌سازی در هر ماژول)
+// پیش‌فرض: bg-gradient-to-r from-blue-600 to-blue-800 text-white
+    headerGradient: "bg-gradient-to-r from-blue-600 to-blue-800 text-white",
+// کلاس CSS هدر ستون‌های جدول
+    theadClass: "bg-blue-700 text-center text-white py-2",
+// کلاس CSS بدنه جدول
+    tbodyClass: "divide-y text-center text-gray-800",
 // تعداد ردیف های نمایش داده شده در هر صفحه یک جدول
     perPage: 10,
     }

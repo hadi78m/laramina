@@ -46,14 +46,13 @@ composer.lock
 /app_test
 /old-package
 /manual
-
+/sms_manager
 # ─── Agent / AI tool files ───
 AGENTS.md
 MEMORY.md
 TASKS.md
 ERROR_LOG.md
 ACTION_TRACKER.md
-
+test.md
 # ─── Test output �──
 /test-output
-

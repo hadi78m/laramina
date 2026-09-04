@@ -41,5 +41,14 @@
             "tests/Models/AppUserStub.php",
             "tests/Models/AppControllerStub.php"
         ]
+    },
+    "scripts": {
+        "check-version": "php scripts/check-version.php",
+        "post-install-cmd": [
+            "git config core.hooksPath .githooks"
+        ],
+        "post-update-cmd": [
+            "git config core.hooksPath .githooks"
+        ]
     }
 }

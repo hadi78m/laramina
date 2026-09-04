@@ -1,0 +1,10 @@
+#!/bin/bash
+# Pre-commit hook: Check version consistency between composer.json and CHANGELOG.md
+echo "🔍 بررسی هماهنگی نسخه..."
+php scripts/check-version.php
+if [ $? -ne 0 ]; then
+    echo ""
+    echo "❌ خطا: نسخه‌ها مطابقت ندارند. لطفاً ابتدا نسخه را به‌روزرسانی کنید."
+    echo "   composer.json و CHANGELOG.md باید نسخه یکسانی داشته باشند."
+    exit 1
+fi

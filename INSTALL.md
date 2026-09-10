@@ -12,7 +12,7 @@
 4. [تنظیمات ماژول](#۴-تنظیمات-ماژول)
 5. [پکیج‌های مکمل](#۵-پکیج‌های-مکمل)
 6. [نقش و دسترسی (بدون Spatie)](#۶-نقش-و-دسترسی-بدون-spatie)
-7. [API و مسیرها](#۷-api-و-مسیرها)
+7. [مسیرها و API](#۷-api-و-مسیرها)
 8. [امنیت](#۸-امنیت)
 9. [عیب‌یابی](#۹-عیب‌یابی)
 10. [تست‌ها](#۱۰-تست‌ها)
@@ -700,11 +700,30 @@ export const editForm = {
 {
     name: 'roles', label: 'نقش‌ها', type: 'select', multiple: true,
     optionEndpoint: 'roles.list',           // نام رووت دریافت گزینه‌ها
-    optionLabel: 'name',                    // فیلد نمایشی
-    optionValue: 'name',                    // فیلد مقدار
+    optionLabel: 'name',                    // فیلد کلید نمایشی (متن گزینه)
+    optionValue: 'name',                    // فیلد کلید مقدار (Value)
     role: ['SuperAdmin'],                   // (اختیاری) فقط نقش مشخص
     helper: 'نقش مورد نظر در صورت نیاز'     // (اختیاری) متن راهنما
 }
+```
+
+**ساختار خروجی Controller برای `optionEndpoint`:**
+
+متد مربوط به این رووت در کنترلر لاراول باید خروجی JSON به شکل آرایه‌ای از آبجکت‌ها برگرداند که کلیدهای تعریف‌شده در `optionLabel` و `optionValue` در آن وجود داشته باشند:
+
+```php
+public function rolesList()
+{
+    return Role::select('name')->orderBy('name')->get();
+}
+```
+
+**خروجی JSON تولید شده:**
+```json
+[
+    {"name": "admin"},
+    {"name": "editor"}
+]
 ```
 
 **group — گروه‌بندی فیلدها:**
@@ -797,7 +816,7 @@ public function json(Request $request)
 
 ---
 
-### ۴.۵ ترجمه‌ها (`resources/lang/fa/adminUI.php`)
+### ۴.۵ ترجمه‌ها (`resources/lang/vendor/laramina/fa/adminUI.php`)
 
 ```php
 <?php
@@ -1080,11 +1099,11 @@ columns: [
 
 ---
 
-## ۷. نقش و دسترسی (بدون Spatie)
+## ۶. نقش و دسترسی (بدون Spatie)
 
 > ⚠️ اگر از Spatie استفاده نمی‌کنید، می‌توانید از سیستم نقش سفارشی استفاده کنید.
 
-### ۷.۱ سیستم مدیریت دسترسی فرانت‌اند
+### ۶.۱ سیستم مدیریت دسترسی فرانت‌اند
 
 فرانت‌اند نقش‌ها را از متغیر `window.AdminUser` می‌خواند:
 
@@ -1097,7 +1116,7 @@ window.AdminUser = {
 
 اگر تعریف نشود، سیستم بدون محدودیت نقش کار می‌کند.
 
-### ۷.۲ روش ۱: با Spatie Permission
+### ۶.۲ روش ۱: با Spatie Permission
 
 ```bash
 composer require spatie/laravel-permission
@@ -1129,7 +1148,7 @@ class User extends Authenticatable
 </script>
 ```
 
-### ۷.۳ روش ۲: بدون Spatie (سیستم سفارشی)
+### ۶.۳ روش ۲: بدون Spatie (سیستم سفارشی)
 
 **Migration:**
 
@@ -1188,7 +1207,7 @@ public function roles()
 </script>
 ```
 
-### ۷.۴ استفاده از نقش در اکشن‌ها
+### ۶.۴ استفاده از نقش در اکشن‌ها
 
 ```js
 // اکشن حذف فقط برای نقش admin
@@ -1200,9 +1219,9 @@ public function roles()
 
 ---
 
-## ۸. API و مسیرها
+## ۷. API و مسیرها
 
-### ۸.۱ endpointها
+### ۷.۱ endpointها
 
 | Endpoint | Method | توضیح |
 |----------|--------|-------|
@@ -1212,16 +1231,16 @@ public function roles()
 | `{module}.destroy/{id}` | POST | حذف رکورد |
 | `{module}.toggle-status/{id}` | POST | تغییر وضعیت |
 
-### ۸.۲ پارامترهای GET (`.json`)
+### ۷.۲ پارامترهای GET (`.json`)
 
-| پارامتر | نوع | پیش‌فرض | توضیح |
-|---------|-----|---------|-------|
-| `page` | int | 1 | شماره صفحه |
-| `per_page` | int | 15 | تعداد آیتم (حداکثر 100) |
-| `search` | string | - | عبارت جستجو |
-| `sort` | string | id | فیلد مرتب‌سازی |
-| `direction` | string | desc | جهت (asc/desc) |
-| `{filter}` | mixed | - | فیلترهای دلخواه |
+| پارامتر     | نوع    | پیش‌فرض | توضیح                   |
+| ----------- | ------ | ------- | ----------------------- |
+| `page`      | int    | 1       | شماره صفحه              |
+| `per_page`  | int    | 15      | تعداد آیتم (حداکثر 100) |
+| `search`    | string | -       | عبارت جستجو             |
+| `sort`      | string | id      | فیلد مرتب‌سازی          |
+| `direction` | string | desc    | جهت (asc/desc)          |
+| `{filter}`  | mixed  | -       | فیلترهای دلخواه         |
 
 **نمونه:**
 
@@ -1231,7 +1250,7 @@ GET /users.json?search=ali&is_active=1&sort=name&direction=asc&per_page=20
 
 ---
 
-## ۹. امنیت
+## ۸. امنیت
 
 - **اعتبارسنجی Sort** — ستون‌های مجاز مرتب‌سازی در `$config['sortable']` تعریف می‌شوند
 - **محدودیت Per-Page** — حداکثر ۱۰۰ آیتم در هر صفحه
@@ -1242,7 +1261,7 @@ GET /users.json?search=ali&is_active=1&sort=name&direction=asc&per_page=20
 
 ---
 
-## ۱۰. عیب‌یابی
+## ۹. عیب‌یابی
 
 | مشکل | راه‌حل |
 |------|--------|
@@ -1257,7 +1276,7 @@ GET /users.json?search=ali&is_active=1&sort=name&direction=asc&per_page=20
 
 ---
 
-## ۱۱. تست‌ها
+## ۱۰. تست‌ها
 
 این پکیج دارای ۶۴ تست خودکار PHPUnit است.
 

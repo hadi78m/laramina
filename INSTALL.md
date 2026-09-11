@@ -16,6 +16,7 @@
 8. [امنیت](#۸-امنیت)
 9. [عیب‌یابی](#۹-عیب‌یابی)
 10. [تست‌ها](#۱۰-تست‌ها)
+11. [نمایش و نمونه‌ها](#۱۱-نمایش-و-نمونه‌ها)
 
 ---
 
@@ -1331,6 +1332,18 @@ php vendor/bin/phpunit --testdox
 | ModuleController | ۳ | API ماژول‌ها |
 | ModuleService | ۲ | سرویس ماژول‌ها |
 | Contract | ۲ | رابط AdminModule |
+
+---
+
+## ۱۱. نمایش و نمونهها
+
+### نصب سریع
+
+<p align="center">
+<video src="resources/js/laramina/docs/media/laramina-quick-install.mp4" controls width="720"></video>
+</p>
+
+> 🎬 بهزودی نمونههای عملی و ویدیوهای آموزشی بیشتری در این بخش قرار خواهند گرفت.
 
 ---
 

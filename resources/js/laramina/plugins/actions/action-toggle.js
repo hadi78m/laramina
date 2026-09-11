@@ -57,10 +57,14 @@ PluginManager.register('column', 'action-toggle', {
 
             const column = table.config.columns.find(c => c.endpoint === endpoint)
 
-            const confirmed = await AppAlert.confirmAction(
-                column.confirmTitle || 'تغییر وضعیت؟',
-                column.confirmText || ''
-            )
+            const confirmed = await Swal.fire({
+                title: column.confirmTitle || 'تغییر وضعیت؟',
+                text: column.confirmText || '',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'تایید',
+                cancelButtonText: 'انصراف',
+            })
             if (!confirmed.isConfirmed) return
 
             // Loader در دکمه

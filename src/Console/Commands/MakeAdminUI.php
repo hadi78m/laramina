@@ -411,7 +411,6 @@ const commonFields = [
 export const createForm = {
 
     endpoint: '{$baseRoute}.store',
-    updateEndpoint: '{$baseRoute}.update',
     deleteEndpoint: '{$baseRoute}.destroy',
 
     title: moduleActions.create || publicLang.create,
@@ -429,6 +428,8 @@ export const createForm = {
 
 // ─── فرم ویرایش (با رمز عبور اختیاری) ───
 export const editForm = {
+
+    updateEndpoint: '{$baseRoute}.update',
 
     title: moduleActions.edit || publicLang.edit,
 

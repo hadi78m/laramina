@@ -83,30 +83,51 @@ content: [
 npm run build
 ```
 
-### ۲.۳ لایه‌اوت
+### ۲.۳ ویرایش layout پیش فرض
 
-فایل `resources/views/layouts/app.blade.php` را ویرایش کنید:
+برای مثال فایل `resources/views/layouts/app.blade.php` را ویرایش کنید:
 >  1. فراخوانی jQuery اگر قبلا استفاده نشده است
->
-> 2. افزودن `@include('laramina::adminPlatform')`  به layout مورد استفاده خود قبل از بسته شدن تگ body  مشابه فایل زیر 
-> 3. برای فراخوانی آیکن ها `font-awesome`  را هم حتما اضافه کنید؛ بصورت `cdn` یا نصب در پروژه
+>  2. برای فراخوانی آیکن ها `font-awesome`  را هم حتما اضافه کنید؛ بصورت `cdn` یا نصب در پروژه
 
-```blade
+```html
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+```
+
+> 3. فراخوانی `tailwindcss`  بصورت داخلی ، vite یا cdn
+- **یا استفاده از cdn**
+```html
+<script src="https://cdn.tailwindcss.com"></script>
+```
+- **یا استفاده از vite**
+```css
+@vite(['resources/css/app.css', 'resources/js/app.js'])
+```
+
+> 4. افزودن `@include('laramina::adminPlatform')`  قبل از بسته شدن تگ body  مشابه فایل زیر 
+
+```html
+<body class="bg-gray-100">
+    @yield('content')
+
+    {{-- Laramina Admin Platform --}}
+    @include('laramina::adminPlatform')
+</body>
+```
+
+> 5. نمونه تغییرات انجام شده
+```html
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
         {{-- استفاده از vite --}}
         {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
-
         {{-- یا استفاده از cdn --}}
         <script src="https://cdn.tailwindcss.com"></script>
 </head>

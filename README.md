@@ -29,20 +29,24 @@
 
 ## 🚀 شروع سریع
 
+### ۱. نصب
 ```bash
-# ۱. نصب
 composer require hadii/laramina
-
-# ۲. انتشار دارایی‌ها
+```
+### ۲. انتشار دارایی‌ها
+```bash
 php artisan vendor:publish --tag=laramina-config
 php artisan vendor:publish --tag=laramina-assets
 php artisan vendor:publish --tag=laramina-lang
 php artisan vendor:publish --tag=laramina-views
+```
 
-# ۳. ایجاد جدول CRUD برای مدل
+### ۳. ایجاد جدول CRUD برای مدل مورد نظر برای مثال مدل `user`
+```bash
 php artisan laramina:make-ui User --force
-
-# ۴. اجرا
+```
+### ۴. اجرا
+```bash
 php artisan serve
 ```
 

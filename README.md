@@ -56,25 +56,17 @@ php artisan serve
 
 ---
 
-## 🖼️ نمایش و نمونهها
+## 🖼️ نمایش و نمونه ها
 
-### نصب سریع
+### 🎥 ویدیوی آموزشی
+
+[![Laramina نصب سریع - ویدیو](https://img.youtube.com/vi/OOP7HAI2eq0/0.jpg)](https://youtu.be/OOP7HAI2eq0)
+
+### ⚡ پیشنمایش سریع
 
 <p align="center">
     <img src="resources/js/laramina/docs/media/laramina-quick-install.gif" alt="نصب سریع Laramina" width="720" />
 </p>
-
-> 🎬 به زودی نمونه های عملی و ویدیوهای آموزشی بیشتری اینجا قرار خواهند گرفت.
-
-<!--
-### ویدیوی آموزشی
-[![Watch the video](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://youtu.be/VIDEO_ID)
-
-### نمونههای عملی
-- [پنل مدیریت کاربران](#)
-- [سیستم مدیریت مقالات](#)
-- [داشبورد فروش](#)
--->
 
 ---
 

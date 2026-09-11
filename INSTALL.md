@@ -1337,13 +1337,15 @@ php vendor/bin/phpunit --testdox
 
 ## ۱۱. نمایش و نمونهها
 
-### نصب سریع
+### 🎥 ویدیوی آموزشی
+
+[![Laramina نصب سریع - ویدیو](https://img.youtube.com/vi/OOP7HAI2eq0/0.jpg)](https://youtu.be/OOP7HAI2eq0)
+
+### ⚡ پیشنمایش سریع
 
 <p align="center">
     <img src="resources/js/laramina/docs/media/laramina-quick-install.gif" alt="نصب سریع Laramina" width="720" />
 </p>
-
-> 🎬 بهزودی نمونههای عملی و ویدیوهای آموزشی بیشتری در این بخش قرار خواهند گرفت.
 
 ---
 

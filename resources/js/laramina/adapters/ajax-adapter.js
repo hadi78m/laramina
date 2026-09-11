@@ -1,6 +1,6 @@
 /**
  * AjaxAdapter - Simple fetch-based AJAX helper
- * Used by laramina admin platform for API calls
+ * Used by laramina admin framework for API calls
  */
 
 const AjaxAdapter = {

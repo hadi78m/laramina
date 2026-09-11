@@ -54,7 +54,7 @@ class ServiceProviderTest extends TestCase
     public function views_are_registered(): void
     {
         $viewFactory = view();
-        $this->assertTrue($viewFactory->exists('laramina::adminPlatform'));
+        $this->assertTrue($viewFactory->exists('laramina::laramina'));
     }
 
     /** @test */

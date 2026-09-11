@@ -1,9 +1,9 @@
-# VAdmin Platform – Developer Guide
+# Laramina – Developer Guide
 
-# راهنمای توسعه ماژول‌ها در Admin Platform
+# راهنمای توسعه ماژول‌ها در Laramina
 ## 1. معرفی
 
-###### این پروژه یک Admin Platform ماژولار برای Laravel است که با JavaScript و Tailwind ساخته شده و امکان ایجاد سریع پنل‌های مدیریتی را فراهم می‌کند.
+###### این پروژه یک Laramina ماژولار برای Laravel است که با JavaScript و Tailwind ساخته شده و امکان ایجاد سریع پنل‌های مدیریتی را فراهم می‌کند.
 
 ### ویژگی‌های اصلی:
 
@@ -58,13 +58,13 @@ return [
 ### مسیر
 
 ```text
-app/AdminPlatform
+app/Laramina
 ```
 ### این بخش منطق سمت سرور را مدیریت می‌کند.
 ### Controllers
 
 ```text
-app/AdminPlatform/Controllers/
+app/Laramina/Controllers/
    ModuleController.php
 ```
 ### وظیفه:
@@ -76,7 +76,7 @@ app/AdminPlatform/Controllers/
 ### Services
 
 ```text
-app/AdminPlatform/Services/
+app/Laramina/Services/
    ModuleService.php
 ```
 ### منطق بیزینس در اینجا قرار می‌گیرد.
@@ -90,7 +90,7 @@ app/AdminPlatform/Services/
 ### Support
 
 ```text
-app/AdminPlatform/Support/
+app/Laramina/Support/
    ModuleRegistry.php
 ```
 ### وظیفه:
@@ -101,7 +101,7 @@ app/AdminPlatform/Support/
 ### Contracts
 
 ```text
-app/AdminPlatform/Contracts/
+app/Laramina/Contracts/
    AdminModule.php
 ```
 **این interface مشخص می‌کند هر ماژول باید چه متدهایی داشته باشد.**
@@ -133,7 +133,7 @@ php artisan admin:make-ui
 ### Providers
 
 ```text
-app/Providers/AdminPlatformServiceProvider.php
+app/Providers/LaraminaServiceProvider.php
 ```
 
 **وظیفه**:
@@ -549,7 +549,7 @@ UI
 ### مسیر
 
 ```text
-app/AdminPlatform/Traits/AdminTableTrait.php
+app/Laramina/Traits/AdminTableTrait.php
 ```
 
 ### Code
@@ -557,7 +557,7 @@ app/AdminPlatform/Traits/AdminTableTrait.php
 ```php
 <?php
 
-namespace App\AdminPlatform\Traits;
+namespace App\Laramina\Traits;
 
 use Illuminate\Http\Request;
 
@@ -694,7 +694,7 @@ trait AdminTableTrait
 
 ```php
 
-use App\AdminPlatform\Traits\AdminTableTrait;
+use App\Laramina\Traits\AdminTableTrait;
 
 class Provider extends Model
 {

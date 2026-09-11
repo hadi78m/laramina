@@ -1,4 +1,4 @@
-{{-- Admin Platform full --}}
+{{-- Laramina full --}}
 <div id="app"></div>
 
 <style>
@@ -11,7 +11,7 @@
 <script src="{{asset('js/sweetalert/sweetalert2@11.14.4.js')}}"></script>
 <script src="{{asset('js/custom/showalertProduction.js')}}"></script>
 
-{{-- Admin Platform --}}
+{{-- Laramina --}}
 <script type="module" src="{{ asset('js/laramina/bootstrap/laramina.js') }}">
 </script>
 

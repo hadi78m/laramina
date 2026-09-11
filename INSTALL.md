@@ -52,7 +52,7 @@ php artisan vendor:publish --tag=laramina-views
 | کانفیگ      | `config/laramina.php`                                               |
 | جاوااسکریپت | `public/js/laramina/`, `public/js/custom/`, `public/js/sweetalert/` |
 | ترجمه‌ها    | `resources/lang/vendor/laramina/fa/` و `en/`                        |
-| ویوها       | `resources/views/vendor/laramina/adminPlatform.blade.php`           |
+| ویوها       | `resources/views/vendor/laramina/laramina.blade.php`           |
 
 ---
 
@@ -104,14 +104,14 @@ npm run build
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 ```
 
-> 4. افزودن `@include('laramina::adminPlatform')`  قبل از بسته شدن تگ body  مشابه فایل زیر 
+> 4. افزودن `@include('laramina::laramina')`  قبل از بسته شدن تگ body  مشابه فایل زیر 
 
 ```html
 <body class="bg-gray-100">
     @yield('content')
 
-    {{-- Laramina Admin Platform --}}
-    @include('laramina::adminPlatform')
+    {{-- Laramina --}}
+    @include('laramina::laramina')
 </body>
 ```
 
@@ -134,13 +134,13 @@ npm run build
 <body class="bg-gray-100">
     @yield('content')
 
-    {{-- Laramina Admin Platform --}}
-    @include('laramina::adminPlatform')
+    {{-- Laramina --}}
+    @include('laramina::laramina')
 </body>
 </html>
 ```
 
-> فراخوانی ⚠️ jQuery باید قبل از `adminPlatform` لود شود.
+> فراخوانی ⚠️ jQuery باید قبل از `laramina` لود شود.
 > می توانید از cdn یا vite برای tailwindcss استفاده کنید
 
 

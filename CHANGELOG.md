@@ -4,6 +4,16 @@
 
 ---
 
+## [۱.۲.۰] - ۲۰۲۶-۰۹-۱۱
+
+### 🔧 تغییر یافته
+- نام ویوی عمومی از `laramina::adminPlatform` به `laramina::laramina` تغییر یافت (`resources/views/laramina.blade.php`)
+- مسیرهای مصرفکننده در مستندات از `app/AdminPlatform` به `app/Laramina` بهروزرسانی شد
+- مستند `ADMIN_PLATFORM_GUIDE.md` به `LARAMINA_GUIDE.md` تغییر نام یافت
+- مستندات و کامنتها از نام قدیمی پکیج (Admin Platform) به `laramina` بهروزرسانی شد
+
+---
+
 ## [۱.۱.۰] - ۲۰۲۶-۰۹-۰۴
 
 ### ✅ اضافه شده

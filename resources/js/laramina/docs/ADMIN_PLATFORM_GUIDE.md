@@ -17,14 +17,14 @@
 ## 2. ساختار پروژه
 
 ```text
-admin-platform/
+laramina/
 ```
 ## پلتفرم از چند لایه اصلی تشکیل شده است.
 ## 3. Config
 
 ```text
 config/
-   admin-platform.php
+   laramina.php
 ```
 
 ## تنظیمات کلی پلتفرم در این فایل قرار دارد.
@@ -170,7 +170,7 @@ sms/index.blade.php
 
 
 ```text
-js/admin-platform
+js/laramina
 ```
 
 **مهم‌ترین بخش سیستم UI.**
@@ -197,7 +197,7 @@ policy-adapter.js
 ### Bootstrap
 
 ```text
-bootstrap/admin-platform.js
+bootstrap/laramina.js
 ```
 
 **فایل اصلی شروع پلتفرم.**

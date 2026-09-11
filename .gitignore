@@ -37,8 +37,6 @@ composer.lock
 *.pid
 *.seed
 *.pid.lock
-# فایل‌های ویدیویی/تصویری بزرگ که حجم ریپو را متورم می‌کنند (نسخه سبک mp4 جایگزین است)
-resources/js/laramina/docs/media/*.gif
 
 # ─── Project internal / dev-only ───
 /test-app

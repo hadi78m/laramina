@@ -1340,7 +1340,7 @@ php vendor/bin/phpunit --testdox
 ### نصب سریع
 
 <p align="center">
-<video src="resources/js/laramina/docs/media/laramina-quick-install.mp4" controls width="720"></video>
+    <img src="resources/js/laramina/docs/media/laramina-quick-install.gif" alt="نصب سریع Laramina" width="720" />
 </p>
 
 > 🎬 بهزودی نمونههای عملی و ویدیوهای آموزشی بیشتری در این بخش قرار خواهند گرفت.

@@ -269,7 +269,25 @@ JS;
         }
 JS;
         }
-        $filtersBlock = $filtersJs ? implode(",\n", $filtersJs) : '';
+        if ($filtersJs) {
+            $filtersBlock = implode(",\n", $filtersJs);
+        } else {
+            // هیچ ستون فیلترپذیری پیدا نشد: یک نمونه غیرفعال می‌گذاریم تا کاربر
+            // در صورت نیاز فقط کامنت را بردارد و key را با ستون واقعی جدول عوض کند.
+            $filtersBlock = <<<JS
+        // ─── نمونه فیلتر (غیرفعال) ───
+        // برای فعال‌سازی، کامنت‌ها را بردارید و key را با ستون واقعی جدول جایگزین کنید
+        // {
+        //     key: 'status',
+        //     label: publicLang.status,
+        //     type: 'select',
+        //     options: {
+        //         1: publicLang.active,
+        //         0: publicLang.inactive
+        //     }
+        // }
+JS;
+        }
 
         return <<<JS
 import { createForm, editForm } from './forms/create-form.js'

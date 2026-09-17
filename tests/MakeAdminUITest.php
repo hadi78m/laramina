@@ -125,6 +125,29 @@ class MakeAdminUITest extends TestCase
     }
 
     /** @test */
+    public function generated_table_js_keeps_disabled_filter_sample_when_no_filter_column_exists(): void
+    {
+        Artisan::call('laramina:make-ui', ['model' => \Tests\Models\PlainItem::class, '--force' => true]);
+
+        $tableJs = File::get(public_path('js/modules/tests/models/plain-items/table.js'));
+
+        $this->assertStringContainsString('filters:', $tableJs);
+        $this->assertStringContainsString("//     key: 'status'", $tableJs);
+        $this->assertStringContainsString('// برای فعال‌سازی، کامنت‌ها را بردارید', $tableJs);
+    }
+
+    /** @test */
+    public function generated_table_js_has_real_filter_when_filter_column_exists(): void
+    {
+        Artisan::call('laramina:make-ui', ['model' => 'User', '--force' => true]);
+
+        $tableJs = File::get(public_path('js/modules/users/table.js'));
+
+        $this->assertStringContainsString("key: 'is_active'", $tableJs);
+        $this->assertStringNotContainsString("//     key: 'status'", $tableJs);
+    }
+
+    /** @test */
     public function generated_form_js_has_create_and_edit(): void
     {
         Artisan::call('laramina:make-ui', ['model' => 'User', '--force' => true]);

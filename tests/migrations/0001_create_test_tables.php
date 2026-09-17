@@ -19,6 +19,14 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        // جدولی بدون ستون‌های فیلترپذیر (is_active / is_default) برای تست نمونه فیلتر غیرفعال
+        Schema::create('plain_items', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->timestamps();
+        });
+
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->string('title');
@@ -31,6 +39,7 @@ return new class extends Migration
 
     public function down(): void
     {
+        Schema::dropIfExists('plain_items');
         Schema::dropIfExists('posts');
         Schema::dropIfExists('users');
     }

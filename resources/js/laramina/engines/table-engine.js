@@ -590,9 +590,28 @@ export const TableEngine = {
 
             const json = await res.json()
 
-            // داده‌ی اصلی و meta
+            // داده‌ی اصلی
             this.currentRows = json.data ?? []
-            this.meta = json.meta ?? null
+
+            // ------------------------------------------------------------------
+            // نرمال‌سازی متای صفحه‌بندی (pagination)
+            // -----------------
+            // - API فعلی (AdminTableTrait) فیلدها را به صورت flat برمی‌گرداند:
+            //   total, per_page, current_page, last_page, from, to
+            // - نسخه‌های قبلی آن‌ها را داخل json.meta می‌فرستادند؛
+            //   هر دو ساختار پشتیبانی می‌شود.
+            // ------------------------------------------------------------------
+            const pagination = json.meta ?? {
+                current_page: json.current_page,
+                per_page: json.per_page,
+                total: json.total,
+                last_page: json.last_page,
+                from: json.from,
+                to: json.to,
+            }
+
+            // اگر total برنگشته باشد، یعنی endpoint متای صفحه‌بندی ندارد
+            this.meta = pagination.total != null ? pagination : null
 
             // رندر بدنه‌ی جدول
             this.renderRows(this.currentRows)
@@ -602,10 +621,13 @@ export const TableEngine = {
 
             const paginationContainer = this.container.querySelector('.admin-pagination')
 
-            // فقط وقتی pagination لازم است که total > per_page
-            if (this.meta && this.meta.total > (this.meta.per_page || this.perPage)) {
+            // صفحه‌بندی فقط وقتی لازم است که بیش از یک صفحه وجود داشته باشد
+            const perPage = this.meta?.per_page || this.perPage || this.currentRows.length || 1
+            const totalPages = this.meta?.last_page || Math.ceil((this.meta?.total || 0) / perPage)
+
+            if (this.meta && totalPages > 1) {
                 TableRenderer.renderPagination(this.meta, this)
-            } else {
+            } else if (paginationContainer) {
                 paginationContainer.innerHTML = ''
             }
 

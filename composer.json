@@ -1,7 +1,7 @@
 {
     "name": "hadii/laramina",
-    "version": "1.2.2",
-    "description": "Modular admin panel for Laravel 10/11/12 with dynamic JS modules and engine-based architecture",
+    "version": "1.2.3",
+    "description": "Modular admin panel for Laravel 10/11/12 with dynamic JS modules and engine-based architecture. Build modular tables with built-in CRUD, filtering, search and pagination.",
     "type": "laravel-package",
     "license": "MIT",
     "authors": [
